@@ -1,0 +1,434 @@
+[
+  {
+    "id": "psg",
+    "name": "Paríž Saint-Germain",
+    "short": "PSG",
+    "country": "FRA",
+    "pot": 1,
+    "colors": {
+      "primary": "#004170",
+      "secondary": "#DA291C"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "bayern",
+    "name": "Bayern Mníchov",
+    "short": "BAY",
+    "country": "GER",
+    "pot": 1,
+    "colors": {
+      "primary": "#DC052D",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "real",
+    "name": "Real Madrid",
+    "short": "RMA",
+    "country": "ESP",
+    "pot": 1,
+    "colors": {
+      "primary": "#FEBE10",
+      "secondary": "#00529F"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "liverpool",
+    "name": "Liverpool",
+    "short": "LIV",
+    "country": "ENG",
+    "pot": 1,
+    "colors": {
+      "primary": "#C8102E",
+      "secondary": "#00B2A9"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "inter",
+    "name": "Inter",
+    "short": "INT",
+    "country": "ITA",
+    "pot": 1,
+    "colors": {
+      "primary": "#0068A8",
+      "secondary": "#111111"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "mancity",
+    "name": "Manchester City",
+    "short": "MCI",
+    "country": "ENG",
+    "pot": 1,
+    "colors": {
+      "primary": "#6CABDD",
+      "secondary": "#1C2C5B"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "arsenal",
+    "name": "Arsenal",
+    "short": "ARS",
+    "country": "ENG",
+    "pot": 1,
+    "colors": {
+      "primary": "#EF0107",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "barcelona",
+    "name": "Barcelona",
+    "short": "BAR",
+    "country": "ESP",
+    "pot": 1,
+    "colors": {
+      "primary": "#A50044",
+      "secondary": "#004D98"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "atletico",
+    "name": "Atlético Madrid",
+    "short": "ATM",
+    "country": "ESP",
+    "pot": 1,
+    "colors": {
+      "primary": "#CB3524",
+      "secondary": "#262E62"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "dortmund",
+    "name": "Borussia Dortmund",
+    "short": "BVB",
+    "country": "GER",
+    "pot": 2,
+    "colors": {
+      "primary": "#FDE100",
+      "secondary": "#111111"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "roma",
+    "name": "AS Rím",
+    "short": "ROM",
+    "country": "ITA",
+    "pot": 2,
+    "colors": {
+      "primary": "#8E1F2F",
+      "secondary": "#F0BC42"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "sporting",
+    "name": "Sporting",
+    "short": "SPO",
+    "country": "POR",
+    "pot": 2,
+    "colors": {
+      "primary": "#008057",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "astonvilla",
+    "name": "Aston Villa",
+    "short": "AVL",
+    "country": "ENG",
+    "pot": 2,
+    "colors": {
+      "primary": "#95BFE5",
+      "secondary": "#670E36"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "porto",
+    "name": "FC Porto",
+    "short": "FCP",
+    "country": "POR",
+    "pot": 2,
+    "colors": {
+      "primary": "#0F4C9B",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "manutd",
+    "name": "Manchester United",
+    "short": "MUN",
+    "country": "ENG",
+    "pot": 2,
+    "colors": {
+      "primary": "#DA291C",
+      "secondary": "#FBE122"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "brugge",
+    "name": "Club Brugge",
+    "short": "BRU",
+    "country": "BEL",
+    "pot": 2,
+    "colors": {
+      "primary": "#005AA0",
+      "secondary": "#111111"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "betis",
+    "name": "Real Betis",
+    "short": "BET",
+    "country": "ESP",
+    "pot": 2,
+    "colors": {
+      "primary": "#00954C",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "psv",
+    "name": "PSV",
+    "short": "PSV",
+    "country": "NED",
+    "pot": 2,
+    "colors": {
+      "primary": "#ED1C24",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "feyenoord",
+    "name": "Feyenoord",
+    "short": "FEY",
+    "country": "NED",
+    "pot": 3,
+    "colors": {
+      "primary": "#E20E0E",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "lille",
+    "name": "Lille",
+    "short": "LIL",
+    "country": "FRA",
+    "pot": 3,
+    "colors": {
+      "primary": "#E01E13",
+      "secondary": "#003876"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "bodo",
+    "name": "Bodø/Glimt",
+    "short": "BOD",
+    "country": "NOR",
+    "pot": 3,
+    "colors": {
+      "primary": "#FFCC00",
+      "secondary": "#111111"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "napoli",
+    "name": "Neapol",
+    "short": "NAP",
+    "country": "ITA",
+    "pot": 3,
+    "colors": {
+      "primary": "#12A0D7",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "leipzig",
+    "name": "RB Lipsko",
+    "short": "RBL",
+    "country": "GER",
+    "pot": 3,
+    "colors": {
+      "primary": "#DD0741",
+      "secondary": "#001F47"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "villarreal",
+    "name": "Villarreal",
+    "short": "VIL",
+    "country": "ESP",
+    "pot": 3,
+    "colors": {
+      "primary": "#FFE667",
+      "secondary": "#005187"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "fenerbahce",
+    "name": "Fenerbahçe",
+    "short": "FEN",
+    "country": "TUR",
+    "pot": 3,
+    "colors": {
+      "primary": "#FFED00",
+      "secondary": "#00296B"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "shakhtar",
+    "name": "Šachtar Doneck",
+    "short": "SHA",
+    "country": "UKR",
+    "pot": 3,
+    "colors": {
+      "primary": "#FF6600",
+      "secondary": "#111111"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "galatasaray",
+    "name": "Galatasaray",
+    "short": "GAL",
+    "country": "TUR",
+    "pot": 3,
+    "colors": {
+      "primary": "#A90432",
+      "secondary": "#FBB800"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "slavia",
+    "name": "Slavia Praha",
+    "short": "SLA",
+    "country": "CZE",
+    "pot": 4,
+    "colors": {
+      "primary": "#D7141A",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "slovan",
+    "name": "ŠK Slovan Bratislava",
+    "short": "SLO",
+    "country": "SVK",
+    "pot": 4,
+    "colors": {
+      "primary": "#005BAA",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "stuttgart",
+    "name": "Stuttgart",
+    "short": "STU",
+    "country": "GER",
+    "pot": 4,
+    "colors": {
+      "primary": "#E32219",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "aek",
+    "name": "AEK Atény",
+    "short": "AEK",
+    "country": "GRE",
+    "pot": 4,
+    "colors": {
+      "primary": "#F5C518",
+      "secondary": "#111111"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "lask",
+    "name": "LASK",
+    "short": "LSK",
+    "country": "AUT",
+    "pot": 4,
+    "colors": {
+      "primary": "#111111",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "como",
+    "name": "Como",
+    "short": "COM",
+    "country": "ITA",
+    "pot": 4,
+    "colors": {
+      "primary": "#003DA5",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "lens",
+    "name": "Lens",
+    "short": "LEN",
+    "country": "FRA",
+    "pot": 4,
+    "colors": {
+      "primary": "#FFE500",
+      "secondary": "#C8102E"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "viking",
+    "name": "Viking",
+    "short": "VIK",
+    "country": "NOR",
+    "pot": 4,
+    "colors": {
+      "primary": "#003DA5",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  },
+  {
+    "id": "sabah",
+    "name": "Sabah",
+    "short": "SAB",
+    "country": "AZE",
+    "pot": 4,
+    "colors": {
+      "primary": "#009B48",
+      "secondary": "#FFFFFF"
+    },
+    "coefficient": null
+  }
+]
