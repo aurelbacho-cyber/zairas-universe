@@ -18,20 +18,27 @@ const legScoreFor = (
   const leg = tie.legs[legIndex];
   if (!leg?.score) return undefined;
   // Leg 1 is hosted by team B, leg 2 by team A (the higher seed hosts second).
-  const aIsHome = legIndex === 1;
+  // The final is a single match on neutral ground, with team A listed first.
+  const aIsHome = tie.round === 'F' ? true : legIndex === 1;
   return aIsHome
     ? { a: leg.score.home, b: leg.score.away }
     : { a: leg.score.away, b: leg.score.home };
 };
 
+/** The final is one match; every other round is played over two legs. */
+export const isSingleMatch = (tie: KnockoutTie): boolean => tie.round === 'F';
+
 /**
- * Resolves a two-legged tie: aggregate first, then extra time, then penalties.
- * There is no away-goals rule (KNOCKOUT.awayGoalsRule === false).
+ * Resolves a tie: aggregate over both legs first (or the single result in the
+ * final), then extra time, then penalties. There is no away-goals rule
+ * (KNOCKOUT.awayGoalsRule === false).
  */
 export function resolveTie(tie: KnockoutTie): TieOutcome {
   const first = legScoreFor(tie, 0);
-  const second = legScoreFor(tie, 1);
-  if (!first || !second) return { complete: false };
+  if (!first) return { complete: false };
+
+  const second = isSingleMatch(tie) ? { a: 0, b: 0 } : legScoreFor(tie, 1);
+  if (!second) return { complete: false };
 
   const aggregate = { a: first.a + second.a, b: first.b + second.b };
 
@@ -99,6 +106,14 @@ export function propagateWinners(ties: KnockoutTie[]): KnockoutTie[] {
 
       const key = tie.feedsSide === 'A' ? 'teamAId' : 'teamBId';
       const previous = next[key];
+
+      // With no winner yet we only take back a team this tie put there itself.
+      // Anything else was filled in by hand — the bracket can be used before
+      // the earlier rounds are played, and that must not be wiped.
+      const wasPropagatedFromHere =
+        previous !== undefined && (previous === tie.teamAId || previous === tie.teamBId);
+      if (!winnerId && !wasPropagatedFromHere) continue;
+
       if (previous !== winnerId) {
         next[key] = winnerId;
         // A changed participant invalidates any result already entered here.

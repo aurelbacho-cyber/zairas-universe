@@ -65,6 +65,28 @@ describe('resolveTie', () => {
     expect(outcome.decidedBy).toBe('penalties');
   });
 
+  it('decides the final on a single match, not two legs', () => {
+    const final = tie({ id: 'F-1', round: 'F', legs: [{ score: { home: 2, away: 1 } }, undefined] });
+    const outcome = resolveTie(final);
+    expect(outcome.complete).toBe(true);
+    // Team A is listed first: the final is on neutral ground, not A's ground.
+    expect(outcome.aggregate).toEqual({ a: 2, b: 1 });
+    expect(outcome.winnerId).toBe('a');
+  });
+
+  it('takes the final to penalties when the single match is level', () => {
+    const level = tie({ id: 'F-1', round: 'F', legs: [{ score: { home: 1, away: 1 } }, undefined] });
+    expect(resolveTie(level).complete).toBe(false);
+
+    const decided = resolveTie({
+      ...level,
+      extraTime: { home: 0, away: 0 },
+      penalties: { home: 2, away: 4 },
+    });
+    expect(decided.winnerId).toBe('b');
+    expect(decided.decidedBy).toBe('penalties');
+  });
+
   it('wins on aggregate without needing extra time', () => {
     const outcome = resolveTie(
       tie({ legs: [{ score: { home: 0, away: 3 } }, { score: { home: 0, away: 1 } }] }),
@@ -124,6 +146,41 @@ describe('propagateWinners', () => {
     expect(po1.winnerId).toBe('a');
     const next = resolved.find((t) => t.id === po1.feedsInto)!;
     expect(next.teamBId).toBe('a');
+  });
+
+  it('keeps teams filled in by hand while the earlier rounds are still empty', () => {
+    // The bracket has to be usable before anything is played — filling the
+    // final in by hand must survive the propagation pass.
+    const bracket = propagateWinners(
+      createEmptyBracket().map((t) =>
+        t.round === 'F' ? { ...t, teamAId: 'x', teamBId: 'y' } : t,
+      ),
+    );
+    const final = bracket.find((t) => t.round === 'F')!;
+    expect(final.teamAId).toBe('x');
+    expect(final.teamBId).toBe('y');
+  });
+
+  it('takes back a propagated team when its result is removed', () => {
+    let bracket = createEmptyBracket().map((t) =>
+      t.id === 'PO-1'
+        ? {
+            ...t,
+            teamAId: 'a',
+            teamBId: 'b',
+            legs: [{ score: { home: 0, away: 2 } }, { score: { home: 1, away: 0 } }] as KnockoutTie['legs'],
+          }
+        : t,
+    );
+    bracket = propagateWinners(bracket);
+    const r16Id = bracket.find((t) => t.id === 'PO-1')!.feedsInto!;
+    expect(bracket.find((t) => t.id === r16Id)!.teamBId).toBe('a');
+
+    // Wipe the play-off result: the team it sent forward has to disappear too.
+    bracket = propagateWinners(
+      bracket.map((t) => (t.id === 'PO-1' ? { ...t, legs: [undefined, undefined] } : t)),
+    );
+    expect(bracket.find((t) => t.id === r16Id)!.teamBId).toBeUndefined();
   });
 
   it('clears a later result when the participant changes underneath it', () => {

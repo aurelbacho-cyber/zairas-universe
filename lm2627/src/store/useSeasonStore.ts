@@ -130,24 +130,32 @@ export function toSeasonState(s: SeasonState): SeasonState {
 
 let saveTimer: ReturnType<typeof setTimeout> | undefined;
 let pendingHistoryLabel: string | undefined;
+let pendingBefore: SeasonState | undefined;
 
 export const useSeasonStore = create<SeasonStore>()((set, get) => {
   /**
    * Every mutation goes through here: it stamps updatedAt, schedules a
    * debounced write to IndexedDB and adds a history snapshot so any change can
    * be rolled back.
+   *
+   * Writes are debounced, so a burst of taps (+1 +1 +1 on a stepper) becomes a
+   * single save and a single undo point. That point is the state from *before*
+   * the first tap of the burst — undoing has to take back the whole burst, not
+   * just the last goal.
    */
   const commit = (label: string, updater: (state: SeasonStore) => Partial<SeasonState>) => {
-    const before = toSeasonState(get());
-    set((state) => ({ ...updater(state), updatedAt: new Date().toISOString() }));
+    pendingBefore = pendingBefore ?? toSeasonState(get());
     pendingHistoryLabel = pendingHistoryLabel ?? label;
+    set((state) => ({ ...updater(state), updatedAt: new Date().toISOString() }));
 
     if (saveTimer) clearTimeout(saveTimer);
     saveTimer = setTimeout(() => {
       const snapshot = toSeasonState(get());
       void saveState(snapshot);
       const historyLabel = pendingHistoryLabel ?? label;
+      const before = pendingBefore ?? snapshot;
       pendingHistoryLabel = undefined;
+      pendingBefore = undefined;
       void pushHistory(before, historyLabel).then((history) => set({ history }));
     }, 400);
   };
@@ -340,11 +348,14 @@ export const useSeasonStore = create<SeasonStore>()((set, get) => {
     // --- badges + settings -------------------------------------------------
     awardBadges: (earned) => {
       if (!earned.length) return;
-      commit('Nový odznak', (state) => {
-        const known = new Set(state.earnedBadges.map((b) => `${b.userId}|${b.badgeId}`));
-        const fresh = earned.filter((b) => !known.has(`${b.userId}|${b.badgeId}`));
-        return fresh.length ? { earnedBadges: [...state.earnedBadges, ...fresh] } : {};
-      });
+      // The badge check re-runs after every change and returns everything that
+      // currently qualifies, so filter first: committing unconditionally would
+      // save and push an undo point on every score entry, flooding the history
+      // with "Nový odznak" and pushing out the real ones.
+      const known = new Set(get().earnedBadges.map((b) => `${b.userId}|${b.badgeId}`));
+      const fresh = earned.filter((b) => !known.has(`${b.userId}|${b.badgeId}`));
+      if (!fresh.length) return;
+      commit('Nový odznak', (state) => ({ earnedBadges: [...state.earnedBadges, ...fresh] }));
     },
 
     patchSettings: (patch) =>

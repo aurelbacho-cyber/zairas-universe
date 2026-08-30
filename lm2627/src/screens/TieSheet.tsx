@@ -118,9 +118,10 @@ export function TieSheet({
 
       {([0, 1] as const).map((index) => {
         if (isFinal && index === 1) return null;
-        // Leg 1 is hosted by B, leg 2 by A.
-        const homeTeam = index === 0 ? b : a;
-        const awayTeam = index === 0 ? a : b;
+        // Leg 1 is hosted by B, leg 2 by A. The final is a single match on
+        // neutral ground, with team A listed first.
+        const homeTeam = isFinal || index === 1 ? a : b;
+        const awayTeam = isFinal || index === 1 ? b : a;
         const leg = tie.legs[index];
         const window = round?.legs[index];
         return (
@@ -137,7 +138,7 @@ export function TieSheet({
 
             <div className="mt-2 space-y-2">
               <LegSide
-                label={`${homeTeam?.name ?? 'domáci'} (doma)`}
+                label={isFinal ? (homeTeam?.name ?? 'tím A') : `${homeTeam?.name ?? 'domáci'} (doma)`}
                 team={homeTeam}
                 value={leg?.score?.home}
                 onChange={(next) =>
@@ -148,7 +149,7 @@ export function TieSheet({
                 }
               />
               <LegSide
-                label={`${awayTeam?.name ?? 'hostia'} (vonku)`}
+                label={isFinal ? (awayTeam?.name ?? 'tím B') : `${awayTeam?.name ?? 'hostia'} (vonku)`}
                 team={awayTeam}
                 value={leg?.score?.away}
                 onChange={(next) =>
@@ -206,7 +207,7 @@ export function TieSheet({
 
       {outcome.aggregate ? (
         <p className="mt-3 text-center text-lg font-black">
-          Celkovo {outcome.aggregate.a}:{outcome.aggregate.b}
+          {isFinal ? 'Výsledok' : 'Celkovo'} {outcome.aggregate.a}:{outcome.aggregate.b}
           {outcome.decidedBy === 'extraTime' ? ' (po predĺžení)' : ''}
           {outcome.decidedBy === 'penalties' ? ' (na penalty)' : ''}
         </p>
