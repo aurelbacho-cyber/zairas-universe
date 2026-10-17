@@ -45,11 +45,11 @@ Engineering hours below are planning ranges, not timers, promises or a price quo
 
 | Stage | Scope | Estimated effort | Suggested AI role and reasoning |
 | --- | --- | --- | --- |
-| 1 — this branch | Lifecycle + wheel/cockpit + density + music + dinosaurs + first logic fixes | 8–16 h equivalent engineering/review, plus device checks | Codex: high for lifecycle/gestures and review; medium for UI edits |
-| 2 | Real-device tuning, compare recorded keypoint traces, input latency/FPS metrics, fair 2P identity | 8–14 h | Codex high; an independent reviewer can use Claude Sonnet 5.5 if already available |
-| 3 | Every mini-game gets clear rounds, increasing content challenges, explicit skill settings and optional parent-child cooperative goals | 16–28 h | Codex high for rules and medium for bounded implementations; review with a stronger reasoning model |
-| 4 | Consistent art direction across games, original music audition/revision, spoken Slovak instruction, reduced-motion/low-reach variants | 12–22 h | Coding model medium; image generation for selected art only; Kling for an optional short intro, not realtime graphics |
-| 5 | Incremental TypeScript/Vite migration, release identity, offline strategy, cross-browser checks | 10–18 h | Codex high for migration boundaries and medium for routine conversions |
+| 1 — this branch | Lifecycle + wheel/cockpit + density + music + dinosaurs + first logic fixes | 8–16 h equivalent engineering/review, plus device checks | GPT-6.1 Sol in Codex: High for lifecycle/gestures and review; Medium for UI edits |
+| 2 | Real-device tuning, compare recorded keypoint traces, input latency/FPS metrics, fair 2P identity | 8–14 h | GPT-6.1 Sol High; an independent reviewer can use Claude Sonnet 5.5 if already available |
+| 3 | Every mini-game gets clear rounds, increasing content challenges, explicit skill settings and optional parent-child cooperative goals | 16–28 h | GPT-6.1 Sol High for rules, Medium for bounded implementations; Astra for a difficult independent review if already available |
+| 4 | Consistent art direction across games, original music audition/revision, spoken Slovak instruction, reduced-motion/low-reach variants | 12–22 h | GPT-6.1 Sol Medium; image generation for selected art only; Kling for an optional short intro, not realtime graphics |
+| 5 | Incremental TypeScript/Vite migration, release identity, offline strategy, cross-browser checks | 10–18 h | GPT-6.1 Sol High for migration boundaries and Medium for routine conversions |
 
 Remaining stages total roughly 46–82 engineering hours plus supervised tests and iteration. Full true-3D car assets/renderer are separate scope, tentatively another 12–24 h after the steering works well on target hardware. Do not move this browser project to Unreal merely because the skill is installed.
 
@@ -59,6 +59,7 @@ Use the strongest available reasoning on calibration, concurrency and correctnes
 
 - Two-player IDs are still assigned spatially in the original helper. Switching sides can still swap identity; this needs recorded traces and an explicit game rule.
 - Some original games use all detected palms while a main object follows poses[0]. The cockpit explicitly forces one driver; other 2P scope needs a per-game pass.
-- Some drawing feedback strings still describe penalties even when baby mode suppresses them centrally. Review all feedback and remove those inconsistencies before a child release.
 - No parental gate, total multi-round session plan, offline cache or commercial release packaging.
 - No actual model benchmark, real camera accuracy study, audio audition or child session was performed in this coding environment.
+
+Reference for current coding model availability and effort controls (checked 17 October 2026): https://learn.chatgpt.com/docs/models . Sonnet 5.5 reference: https://www.anthropic.com/claude-sonnet-5-5 . Task allocation above is an engineering recommendation.

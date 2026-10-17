@@ -17,6 +17,11 @@ async function main(){
   await new Promise(resolve=>server.listen(4173,'127.0.0.1',resolve));
   const browser=await chromium.launch();
   try{
+    try{
+      const response=await fetch('https://zairas-universe-git-codex-mot-f14fbd-aurelbacho-cybers-projects.vercel.app');
+      const body=await response.text();
+      console.log(JSON.stringify({deployedPreviewStatus:response.status,containsMotionLab:body.includes('Motion Lab'),containsControlsScript:body.includes('src/controls.js')}));
+    }catch(e){console.log(JSON.stringify({deployedPreviewFetchError:e.message}));}
     for(const viewport of [{width:1280,height:800},{width:390,height:844}]){
       const page=await browser.newPage({viewport});
       const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -44,6 +49,7 @@ async function main(){
       assert.equal(await page.locator('.card').count(),13);
       assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
       await page.screenshot({path:path.join(root,'test-results','menu-'+viewport.width+'.png')});
+      if(viewport.width===1280)console.log('ZAIRA_SCREENSHOT_MENU:'+(await page.screenshot({type:'jpeg',quality:55,fullPage:true})).toString('base64'));
       await page.locator('[onclick="startGame(\'car\')"]').click();
       await page.waitForFunction(()=>A.running&&A.game.ready,{},{timeout:25000});
       const distance=await page.evaluate(()=>A.game.distance);

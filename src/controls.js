@@ -93,7 +93,7 @@
   function mathRound(level,rand=Math.random){
     const int=(a,b)=>a+Math.floor(rand()*(b-a+1));let a,b,op,ans;
     if(level==='baby'){a=int(1,3);b=int(1,2);op='+';ans=a+b;}
-    else if(level==='kid'){a=int(2,12);b=int(1,9);op=rand()<.5?'+':'−';if(op==='−'&&a<b)[a,b]=[b,a];ans=op==='+'?a+b:a-b;}
+    else if(level==='kid'){a=int(2,10);b=int(1,10);op=rand()<.5?'+':'−';if(op==='−'&&a<b)[a,b]=[b,a];ans=op==='+'?a+b:a-b;}
     else{op=['+','−','×','÷'][int(0,3)];
       if(op==='×'){a=int(2,12);b=int(2,10);ans=a*b;}
       else if(op==='÷'){b=int(2,10);ans=int(2,12);a=b*ans;}

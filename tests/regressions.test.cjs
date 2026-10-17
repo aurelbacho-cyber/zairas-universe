@@ -143,6 +143,10 @@ test('number sequence accepts at most one deliberate selection',()=>{
   const h=app();h.api.A.canvas=h.env.document.getElementById('gc');h.api.A.video=h.env.document.getElementById('cam');
   const game=new h.api.OrderGame();assert.equal(game.balls.length,3);
   assert.ok(game.balls.every(b=>b.r<60));assert.equal(game.next,1);
+  game.picker.check=()=>({pickedId:1,hoverId:1,progress:1});
+  game.update([pose()],900,700);
+  assert.equal(game.next,2);assert.equal(game.balls.filter(b=>b.popped).length,1);
+  game.update([pose()],900,700);assert.equal(game.next,2);
 });
 test('cockpit pauses distance and collisions when hands are missing',()=>{
   const h=app();h.api.A.gameType='car';h.api.A.canvas=h.env.document.getElementById('gc');h.api.initGame('car');
