@@ -2,9 +2,13 @@
 <html lang="sk">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>🪐 Zaira's Universe v4 DUO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zaira's Universe · Motion Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="src/controls.js"></script>
+<script src="src/music.js"></script>
+<script src="src/cockpit.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.17.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.1.3/dist/pose-detection.min.js"></script>
 <style>
@@ -36,9 +40,6 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
 
 .cat-title{font-family:'Fredoka One',cursive;font-size:1.2rem;margin:1.3rem 0 .6rem;width:100%;max-width:760px;display:flex;align-items:center;gap:.6rem}
 .cat-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,255,255,.25),transparent)}
-.cat-dino .cat-title{color:#ff8a00}
-.cat-dino .card:hover{border-color:#ff8a00;box-shadow:0 14px 40px rgba(0,0,0,.5),0 0 26px rgba(255,138,0,.55)}
-.cat-dino .card-title{color:#ff8a00}
 .cat-move .cat-title{color:var(--cyan)}.cat-color .cat-title{color:var(--pink)}.cat-num .cat-title{color:var(--yellow)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:.85rem;max-width:760px;width:100%}
 .card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:18px;
@@ -117,6 +118,46 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes ledPulse{from{opacity:.5;transform:scale(.8)}to{opacity:1;transform:scale(1.3)}}
 @keyframes scaleBreath{from{transform:scale(1)}to{transform:scale(1.04)}}
+
+/* Motion Lab refinement; preserve the familiar game categories and typefaces. */
+:root{--bg:#091222;--cyan:#8ce6e5;--pink:#eda3ba;--yellow:#ffe0a0;--purple:#bca5ef;}
+#menu{background:radial-gradient(ellipse at 18% 12%,#253452,transparent 60%),radial-gradient(ellipse at 90% 80%,#243e43,transparent 60%),var(--bg);padding-top:1.2rem;}
+.universe-nav{display:flex;justify-content:space-between;gap:20px;width:100%;max-width:960px;font-size:.8rem;color:#c1d4e5;padding:8px 0 30px;}
+.logo{max-width:960px;font-size:clamp(1.85rem,5.4vw,3.6rem);background:linear-gradient(110deg,#f7e0ac,#c5dfec 60%,#c6b9e9);-webkit-background-clip:text;background-clip:text;filter:none;animation:none;}
+.tagline{font-size:.75rem;letter-spacing:.12em;color:#c5d3e4;margin:12px 0 26px;}
+.settings{max-width:900px;gap:18px;}
+.set-label{color:#bac8d9;letter-spacing:.10em;}
+.pill{color:#c9d3e2;min-height:44px;font-family:'Nunito',sans-serif;font-weight:900;}
+.pill.on{background:#d5f1ee;color:#112c37;box-shadow:none;}
+.tuning{width:100%;max-width:760px;margin:16px 0 8px;border:1px solid #3a506b;background:#132138;border-radius:18px;padding:14px 18px;}
+.tuning summary{font-weight:900;cursor:pointer;min-height:30px;}
+.tuning-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));grid-auto-flow:dense;gap:14px;margin-top:16px;}
+.tuning label{font-size:.82rem;font-weight:700;color:#d4e0ee;display:flex;flex-direction:column;gap:8px;}
+.tuning select{font:inherit;color:#edf5ff;background:#23354e;border:1px solid #657b95;border-radius:10px;padding:10px;min-height:44px;max-width:100%;}
+.tuning p{font-size:.75rem;color:#c0cfdf;line-height:1.6;margin-top:14px;}
+.grid{grid-auto-flow:dense;gap:12px;}
+.card{background:linear-gradient(155deg,rgba(59,79,109,.5),rgba(21,36,57,.8));border-color:#344a65;box-shadow:0 10px 28px #040b1728;min-height:155px;position:relative;overflow:hidden;}
+.card-desc{color:#c6d3e3;font-size:.77rem;}
+.card-icon{animation:none;}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 35px #02071066!important;border-color:#b1d8df!important;}
+.cockpit-card{background:radial-gradient(ellipse at 70% 20%,#62799888,transparent 70%),linear-gradient(145deg,#254456,#172740);border-color:#88b5c1;}
+.cockpit-card .card-title{color:#e7f3ef;}
+.cat-title{font-size:1.05rem;margin-top:28px;letter-spacing:.03em;}
+.menu-footer{color:#bdcddd;}
+button:focus-visible,select:focus-visible,summary:focus-visible,.card:focus-visible{outline:3px solid #ffe0a0;outline-offset:4px;}
+.game-btns{flex-wrap:wrap;justify-content:flex-end;max-width:78%;bottom:max(10px,env(safe-area-inset-bottom));right:10px;gap:6px;}
+.gbtn{font-family:'Nunito',sans-serif;font-weight:900;font-size:.78rem;min-height:44px;background:#16253be6;border-color:#8293a9;}
+.pose-bar{bottom:62px;left:12px;background:#101d30dd;border-radius:8px;padding:6px;max-width:90%;color:#e2efff;}
+.hud-val{font-size:1.4rem;text-shadow:none!important;}
+#hud-name .hud-val{max-width:38vw;font-size:.8rem;}
+.car-reset{display:none;}
+.driving .car-reset{display:block;}
+.driving #skelBtn{display:none;}
+.driving #cam{top:94px;left:12px;width:min(180px,25vw);height:min(135px,19vw);object-fit:cover;opacity:.82;border-radius:12px;border:1px solid #d9edf388;z-index:3;pointer-events:none;}
+#results .res-stars{font-size:1rem;}
+@media(max-width:480px){.universe-nav{padding-bottom:20px;font-size:.7rem;}.grid{grid-template-columns:repeat(2,minmax(0,1fr));}.card{padding:16px 10px;}.game-btns{max-width:100%;}.gbtn{padding:8px;font-size:.70rem;}.hud{padding:12px;}.hud-val{font-size:1.15rem;}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+
 </style>
 </head>
 <body>
@@ -125,8 +166,9 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
 
 <!-- MENU -->
 <div id="menu" class="screen active">
-  <div class="logo">🪐 ZAIRA'S UNIVERSE</div>
-  <div class="tagline">V4 DUO · pohyb, farby, čísla a hra pre dvoch</div>
+  <div class="universe-nav"><span>Zaira’s Universe</span><span>Pohyb je hra</span></div>
+  <div class="logo" role="heading" aria-level="1">🪐 ZAIRA'S UNIVERSE</div>
+  <div class="tagline">Pohybom objavuj svoj vesmír</div>
   <div id="securityBanner" class="security-banner"></div>
 
   <div class="settings">
@@ -160,6 +202,35 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
     </div>
   </div>
 
+
+  <details class="tuning">
+    <summary>Tempo, úlohy a citlivosť</summary>
+    <div class="tuning-grid">
+      <label>Tempo pohybu
+        <select id="tempo" onchange="A.tempo=this.value">
+          <option value="calm">Pokojné</option>
+          <option value="lively" selected>Svižné</option>
+          <option value="challenge">Výzva</option>
+        </select>
+      </label>
+      <label>Náročnosť úloh
+        <select id="cognitive" onchange="A.cognitive=this.value">
+          <option value="baby" selected>Začínam · malé množstvá</option>
+          <option value="kid">Pokračujem · do 20</option>
+          <option value="pro">Výzva · násobenie a delenie</option>
+        </select>
+      </label>
+      <label>Citlivosť volantu
+        <select id="sensitivity" onchange="A.sensitivity=Number(this.value)">
+          <option value=".75">Jemná</option>
+          <option value="1" selected>Bežná</option>
+          <option value="1.35">Citlivá</option>
+        </select>
+      </label>
+    </div>
+    <p>Vek nastaví veľkosť cieľov a ochranu pred stratou bodov. Tempo a úlohy môžeš meniť zvlášť. Pri strate sledovania sa hranie pozastaví. Režim životov končí najneskôr po 3 minútach aktívnej hry.</p>
+  </details>
+
   <div class="cat-move" style="width:100%;max-width:760px">
     <div class="cat-title">🏃 POHYB &amp; AKCIA</div>
     <div class="grid">
@@ -167,19 +238,12 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
       <div class="card" onclick="startGame('sort')"><span class="card-icon">🍎🥕</span><div class="card-title">Triediť!</div><div class="card-desc">Ľavá = ovocie, pravá = zelenina</div></div>
       <div class="card" onclick="startGame('runner')"><span class="card-icon">🏃</span><div class="card-title">Bežec</div><div class="card-desc">Skáč, čupni sa, zbieraj mince v behu!</div></div>
       <div class="card" onclick="startGame('boat')"><span class="card-icon">🛶</span><div class="card-title">Rieka</div><div class="card-desc">Uhýbaj doľava-doprava</div></div>
-      <div class="card" onclick="startGame('car')"><span class="card-icon">🚗</span><div class="card-title">Auto</div><div class="card-desc">Riaď volantom z rúk!</div></div>
+      <div class="card cockpit-card" role="button" tabindex="0" onclick="startGame('car')"><span class="card-icon">🚗</span><div class="card-title">Za volantom</div><div class="card-desc">Nová cesta z pohľadu vodiča<br>Obe ruky sú tvoj volant</div></div>
       <div class="card" onclick="startGame('glass')"><span class="card-icon">🪟</span><div class="card-title">Utri sklo</div><div class="card-desc">Utri paru dlaňami · bez prehry 🧘</div></div>
       <div class="card" onclick="startGame('space')"><span class="card-icon">🚀</span><div class="card-title">Vesmír</div><div class="card-desc">Ruky hore = streľba!</div></div>
     </div>
   </div>
 
-  <div class="cat-dino" style="width:100%;max-width:760px">
-    <div class="cat-title">🦕 DINOSAURY · 2 HRÁČI</div>
-    <div class="grid">
-      <div class="card" onclick="startDino('hunt')"><span class="card-icon">🦖</span><div class="card-title">Lov koristi</div><div class="card-desc">DUEL · T-Rex vs Raptor, delená obrazovka</div></div>
-      <div class="card" onclick="startDino('nest')"><span class="card-icon">🥚</span><div class="card-title">Hniezdo</div><div class="card-desc">SPOLUPRÁCA · chráňte vajíčko spolu 🤝</div></div>
-    </div>
-  </div>
 
   <div class="cat-color" style="width:100%;max-width:760px">
     <div class="cat-title">🎨 FARBY</div>
@@ -194,8 +258,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
     <div class="cat-title">🔢 ČÍSLA</div>
     <div class="grid">
       <div class="card" onclick="startGame('count')"><span class="card-icon">🐐</span><div class="card-title">Počítanie</div><div class="card-desc">Spočítaj zvieratká, vyber číslo</div></div>
-      <div class="card" onclick="startGame('order')"><span class="card-icon">1️⃣2️⃣</span><div class="card-title">Poradie</div><div class="card-desc">Praskni balóny 1→5 v poradí</div></div>
-      <div class="card" onclick="startGame('math')"><span class="card-icon">➕</span><div class="card-title">Sčítanie</div><div class="card-desc">Vyber správny výsledok</div></div>
+      <div class="card" onclick="startGame('order')"><span class="card-icon">1️⃣2️⃣</span><div class="card-title">Poradie</div><div class="card-desc">Číselná výprava podľa úrovne</div></div>
+      <div class="card" onclick="startGame('math')"><span class="card-icon">➕</span><div class="card-title">Matematika</div><div class="card-desc">Vyber správny výsledok</div></div>
     </div>
   </div>
 
@@ -207,6 +271,7 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
   <div class="loader-ring"></div>
   <div id="loading-msg">Načítavam AI model...</div>
   <div class="loading-sub">Prvé spustenie môže trvať 15–30 sekúnd</div>
+  <button class="gbtn" onclick="goMenu()">Späť do menu</button>
 </div>
 
 <!-- GAME -->
@@ -225,7 +290,8 @@ body{background:var(--bg);font-family:'Nunito',sans-serif;color:#fff}
   <div class="pose-bar"><div class="pose-led" id="poseLed"></div><span id="poseLabel">Hľadám telo...</span></div>
   <div class="game-btns">
     <button class="gbtn" id="sndBtn" onclick="toggleSound()">🔊 Zvuk</button>
-    <button class="gbtn skel-off" id="musBtn" onclick="toggleMusic()">🎵 Hudba OFF</button>
+    <button class="gbtn" id="musBtn" onclick="toggleMusic()">🎵 Hudba ON</button>
+    <button class="gbtn car-reset" onclick="if(A.game&&A.game.recalibrate)A.game.recalibrate()">Vyrovnať volant</button>
     <button class="gbtn" id="skelBtn" onclick="toggleSkeleton()">🦴 Kostra</button>
     <button class="gbtn exit" onclick="exitGame()">✕ Koniec</button>
   </div>
@@ -278,11 +344,10 @@ const A={detector:null,detectorPlayers:0,stream:null,video:null,canvas:null,ctx:
   game:null,gameType:null,raf:null,score:0,scores:[0,0],timeLeft:60,timerID:null,
   running:false,poses:[],poseOK:false,showSkeleton:true,players:1,
   diff:'baby',mode:'time',lives:5,playerLives:[5,5],jokers:0,playerJokers:[0,0],
-  jokerEarnedAt:0,playerJokerEarnedAt:[0,0],lastInferMs:0};
-function D(){return DIFF[A.diff]}
-/* DINO v6: duel už nie je viazaný na 'balloons' — riadi ho flag duo:true
-   v GAME_META. Kooperačná hra (hniezdo) má coop:true a duel NEpoužíva,
-   lebo hráči zdieľajú jedno skóre aj životy. */
+  jokerEarnedAt:0,playerJokerEarnedAt:[0,0],lastInferMs:0,tempo:'lively',cognitive:'baby',sensitivity:1,simTime:0,activeSeconds:0,lastPoseAt:0};
+function D(){const t={calm:{rate:1.2,speed:.65},lively:{rate:.8,speed:1},challenge:{rate:.6,speed:1.3}}[A.tempo];return{size:DIFF[A.diff].size,rate:t.rate,speed:t.speed*.5};}
+function gameClock(){return A.simTime||0;}
+
 function isDuel(){
   const gm=GAME_META[A.gameType];
   return A.players===2 && !!(gm&&gm.duo);
@@ -291,7 +356,7 @@ function isCoop(){
   const gm=GAME_META[A.gameType];
   return A.players===2 && !!(gm&&gm.coop);
 }
-function setDiff(d){A.diff=d;document.querySelectorAll('#diffPills .pill').forEach(p=>p.classList.toggle('on',p.dataset.d===d))}
+function setDiff(d){A.diff=d;A.cognitive=d;document.getElementById('cognitive').value=d;document.querySelectorAll('#diffPills .pill').forEach(p=>p.classList.toggle('on',p.dataset.d===d))}
 function setMode(m){A.mode=m;document.querySelectorAll('#modePills .pill').forEach(p=>p.classList.toggle('on',p.dataset.m===m))}
 function setPlayers(n){
   A.players=n;
@@ -307,24 +372,21 @@ const GAME_META={
   sort:{name:'🍎🥕 TRIEDIŤ',instr:'ĽAVOU dlaňou chytaj OVOCIE 🍎, PRAVOU ZELENINU 🥕'},
   runner:{name:'🏃 BEŽEC',instr:'VYSKOČ cez nízke prekážky 🌵, ČUPNI SA pod vtákmi 🦅, mince 🪙 zbieraj v normálnom behu! Postav sa rovno, nech ťa kamera vidí celého.'},
   boat:{name:'🛶 RIEKA',instr:'Kráčaj DOĽAVA a DOPRAVA — vyhýbaj sa skalám 🪨, zbieraj hviezdy ⭐'},
-  car:{name:'🚗 AUTO',instr:'Drž ruky ako VOLANT 🫲🫱 a otáčaj ním! Zbieraj mince 🪙, vyhýbaj sa autám.'},
+  car:{name:'ZA VOLANTOM',instr:'Hra pre jedného vodiča. Ukáž obe zápästia pred telom, ako na volante. Najprv ich podrž rovno, potom otáčaj do strán. Papier nepotrebuješ. Zbieraj hviezdičky, obchádzaj kužele.'},
   space:{name:'🚀 VESMÍR',instr:'Pohybom tela riadiš loď · Zdvihni RUKU NAD RAMENO = streľba 🔫'},
   colorpop:{name:'🔴 FAREBNÝ LOV',instr:'Praskaj IBA balóny SPRÁVNEJ farby! Za 100 bodov žolík ⚡ — TLESKNI a prasknú všetky správne!',joker:true},
   colorsort:{name:'🔵🔴 FAREBNÉ TRIEDENIE',instr:'Každá dlaň chytá SVOJU farbu — pozri farebné kruhy na rukách!'},
   colormatch:{name:'🌈 NÁJDI FARBU',instr:'Hore vidíš farbu — dotkni sa bublín ROVNAKEJ farby! Tlesknutie = žolík ⚡',joker:true},
   count:{name:'🐐 POČÍTANIE',instr:'Spočítaj zvieratká a PODRŽ dlaň na správnom čísle!'},
   order:{name:'1️⃣ PORADIE',instr:'Praskaj balóny V PORADÍ: 1, 2, 3, 4, 5!'},
-  math:{name:'➕ SČÍTANIE',instr:'Vypočítaj príklad a PODRŽ dlaň na správnej odpovedi!'},
-  hunt:{duo:true,joker:true,name:'🦖 LOV KORISTI',
-    instr:'DUEL! Ľavá polovica = 🦖 T-REX (veľká korisť, +25), pravá = 🦅 RAPTOR (rýchla korisť, +10). Chytaj DLAŇAMI len na svojej strane. Pozor na kosti ☠️!'},
-  nest:{coop:true,name:'🥚 HNIEZDO',
-    instr:'SPOLUPRÁCA! Chráňte vajíčko 🥚 v strede. Ľavý hráč bráni ľavú stranu, pravý pravú. Ničte meteory ☄️ a predátorov DLAŇAMI. Máte SPOLOČNÉ životy — držte spolu!'},
-  glass:{name:'🪟 UTRI SKLO',instr:'Sklo je zahmlené! Utri ho DLAŇAMI 🖐️ veľkými pohybmi a zisti, kto sa za ním skrýva. Nedá sa prehrať — hraj pokojne.',noLives:true},
+  math:{name:'➕ MATEMATIKA',instr:'Vypočítaj príklad a PODRŽ dlaň na správnej odpovedi!'},
+
+  glass:{coop:true,name:'🪟 UTRI SKLO',instr:'Sklo je zahmlené! Utri ho DLAŇAMI 🖐️ veľkými pohybmi a zisti, kto sa za ním skrýva. Nedá sa prehrať — hraj pokojne.',noLives:true},
   debug:{name:'🧪 TEST DLANÍ',instr:'Rodičovský diagnostický režim: kostra, dlane, súradnice, tlesknutie, FPS. Žiadna hra, žiadne skóre.',debug:true}
 };
 
 /* ═════ ROUTING ═════ */
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function show(id){if(id==='menu')animateMenu();document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function showErr(m,s){document.getElementById('errMsg').textContent=m;document.getElementById('errSub').textContent=s||'';document.getElementById('errorBox').classList.add('show')}
 function dismissError(){document.getElementById('errorBox').classList.remove('show');goMenu()}
 function retryCamera(){document.getElementById('errorBox').classList.remove('show');startGame(A.gameType||'balloons')}
@@ -354,83 +416,102 @@ function updateSecurityBanner(){
     b.textContent='⚠️ Aplikácia je otvorená vo vloženom náhľade. Pre kameru ju otvor priamo v samostatnej karte Chrome/Safari.';b.classList.add('show');
   }else b.classList.remove('show');
 }
-addEventListener('DOMContentLoaded',updateSecurityBanner);
+
+addEventListener('DOMContentLoaded',()=>{
+  updateSecurityBanner();
+  document.querySelectorAll('.card').forEach(card=>{
+    card.setAttribute('role','button');card.tabIndex=0;
+    card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click();}});
+  });
+  animateMenu();
+});
+function animateMenu(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+  const cards=document.querySelectorAll('.card');
+  if(window.gsap){gsap.fromTo(cards,{opacity:.4,y:12,scale:.98},{opacity:1,y:0,scale:1,duration:.42,stagger:.025,ease:'power2.out',overwrite:true});return;}
+  cards.forEach((card,i)=>{if(card.animate)card.animate([{opacity:.4,transform:'translateY(12px) scale(.98)'},{opacity:1,transform:'translateY(0) scale(1)'}],{duration:420,delay:Math.min(i*25,250),easing:'cubic-bezier(.2,.8,.2,1)'});});
+}
+
 function goMenu(){stopAll();show('menu')}
 function toggleSkeleton(){A.showSkeleton=!A.showSkeleton;document.getElementById('skelBtn').classList.toggle('skel-off',!A.showSkeleton)}
 
 /* ═════ START ═════ */
-/* DINO v6: dino hry sú stavané pre 2 hráčov — pri kliku sa režim
-   prepne automaticky, aby rodič nemusel nič hľadať v nastaveniach.
-   Hrateľné sú aj sólo, ale defaultne ponúkneme DUO. */
-function startDino(type){
-  if(A.players!==2)setPlayers(2);
-  startGame(type);
+
+const LIFE={epoch:0,timers:new Set(),waits:new Set(),inference:null,modelTask:Promise.resolve()};
+function cancelled(){const e=new Error('Relácia bola zrušená');e.name='AbortError';return e;}
+function current(id){return id===LIFE.epoch;}
+function sessionTimeout(fn,ms){
+  const id=LIFE.epoch;const t=setTimeout(()=>{LIFE.timers.delete(t);if(current(id))fn();},ms);LIFE.timers.add(t);return t;
+}
+function waitSession(ms,id){
+  return new Promise((resolve,reject)=>{
+    const cancel=()=>{clearTimeout(t);LIFE.timers.delete(t);LIFE.waits.delete(cancel);reject(cancelled());};
+    const t=setTimeout(()=>{LIFE.timers.delete(t);LIFE.waits.delete(cancel);current(id)?resolve():reject(cancelled());},ms);
+    LIFE.timers.add(t);LIFE.waits.add(cancel);
+  });
 }
 async function startGame(type){
-  A.gameType=type;show('loading');
+  if(!GAME_META[type])return;
+  stopAll();if(type==='car')setPlayers(1);const id=LIFE.epoch;A.gameType=type;show('loading');actx();
   try{
-    setMsg('Spúšťam kameru... 📷');await initCamera();
-    if(!A.detector||A.detectorPlayers!==A.players){setMsg(A.players===2?'Načítavam AI pre 2 hráčov... 👥':'Načítavam AI detekciu pohybu... 🤖');await initDetector()}
-    setMsg('Pripravujem hru... 🎮');
-    resetGameState();initCanvas();initGame(type);
-    show('game');
+    setMsg('Spúšťam kameru...');await initCamera(id);if(!current(id))return;
+    setMsg('Pripravujem sledovanie pohybu...');await initDetector(id,A.players);if(!current(id))return;
+    resetGameState();initCanvas();initGame(type);show('game');
     document.getElementById('gameName').textContent=GAME_META[type].name;
-    await doCountdown(GAME_META[type].instr);
-    A.running=true;
-    updateHUD();startLoop();
-    /* PORT v5: AudioContext sa odomyká až tu — startGame je vždy spustený
-       klikom používateľa, čím spĺňame mobilné autoplay pravidlá. */
-    actx();if(SND.music)musicStart();
-    if(A.mode==='time'&&!GAME_META[type].debug)startTimer();
+    await doCountdown(GAME_META[type].instr,id);if(!current(id))return;
+    A.running=true;A.simTime=0;A.activeSeconds=0;A.lastPoseAt=0;
+    sessionTimeout(()=>{if(A.running)endGame();},300000);
+    updateHUD();startLoop(id);if(SND.music)musicStart();
   }catch(e){
-    console.error(e);
-    const info=cameraErrorText(e);
-    show('menu');showErr(info.title,info.detail);
+    if(!current(id)||e.name==='AbortError')return;
+    stopAll();console.error(e);const info=cameraErrorText(e);show('menu');showErr(info.title,info.detail);
   }
 }
-function setMsg(t){document.getElementById('loading-msg').textContent=t}
-
-async function initCamera(){
-  A.video=document.getElementById('cam');
-  if(!window.isSecureContext){const e=new Error('Camera requires HTTPS');e.code='INSECURE_CONTEXT';throw e}
-  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){const e=new Error('mediaDevices unavailable');e.code='MEDIA_DEVICES_UNAVAILABLE';throw e}
-  if(A.stream)A.stream.getTracks().forEach(t=>t.stop());
-  const preferred={audio:false,video:{facingMode:{ideal:'user'},width:{ideal:640},height:{ideal:480},frameRate:{ideal:24,max:30}}};
-  try{A.stream=await navigator.mediaDevices.getUserMedia(preferred)}
+function setMsg(t){document.getElementById('loading-msg').textContent=t;}
+async function initCamera(id){
+  const video=document.getElementById('cam');A.video=video;
+  if(!window.isSecureContext){const e=new Error('Camera requires HTTPS');e.code='INSECURE_CONTEXT';throw e;}
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){const e=new Error('mediaDevices unavailable');e.code='MEDIA_DEVICES_UNAVAILABLE';throw e;}
+  let stream;
+  try{stream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:{ideal:'user'},width:{ideal:640},height:{ideal:480},frameRate:{ideal:30,max:30}}});}
   catch(e){
-    if(e.name==='OverconstrainedError'||e.name==='TypeError')A.stream=await navigator.mediaDevices.getUserMedia({audio:false,video:true});
-    else throw e;
+    if(!current(id))throw cancelled();
+    if(e.name==='OverconstrainedError'||e.name==='TypeError')stream=await navigator.mediaDevices.getUserMedia({audio:false,video:true});else throw e;
   }
-  A.video.srcObject=A.stream;
-  return new Promise((res,rej)=>{
-    let done=false;
-    const timer=setTimeout(()=>{if(!done){done=true;rej(new Error('Timeout kamery'))}},12000);
-    A.video.onloadedmetadata=()=>A.video.play().then(()=>{if(!done){done=true;clearTimeout(timer);res()}}).catch(rej);
+  if(!current(id)){stream.getTracks().forEach(t=>t.stop());throw cancelled();}
+  A.stream=stream;video.srcObject=stream;
+  await new Promise((resolve,reject)=>{
+    let settled=false,t;
+    const done=(error)=>{if(settled)return;settled=true;clearTimeout(t);LIFE.timers.delete(t);LIFE.waits.delete(cancel);video.onloadedmetadata=null;error?reject(error):resolve();};
+    const cancel=()=>done(cancelled());
+    const ready=()=>{Promise.resolve(video.play()).then(()=>{if(current(id))done();else done(cancelled());},done);};
+    t=setTimeout(()=>done(new Error('Timeout kamery')),12000);LIFE.timers.add(t);LIFE.waits.add(cancel);
+    video.onloadedmetadata=ready;if(video.readyState>=1)ready();
   });
 }
-async function initDetector(){
-  await tf.ready();
-  if(A.detector&&A.detector.dispose)await A.detector.dispose();
-  const modelType=A.players===2
-    ?poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING
-    :poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING;
-  const config=A.players===2
-    ?{modelType,enableSmoothing:true,minPoseScore:.12,multiPoseMaxDimension:256,enableTracking:true,trackerType:poseDetection.TrackerType.BoundingBox}
-    :{modelType,enableSmoothing:true,minPoseScore:.12};
-  A.detector=await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet,config);
-  A.detectorPlayers=A.players;
-}
-function initCanvas(){A.canvas=document.getElementById('gc');A.ctx=A.canvas.getContext('2d');resize();addEventListener('resize',resize)}
-function resize(){if(!A.canvas)return;A.canvas.width=innerWidth;A.canvas.height=innerHeight}
-
-function doCountdown(instr){
-  return new Promise(res=>{
-    const el=document.getElementById('cdOverlay'),num=document.getElementById('cdNum');
-    document.getElementById('cdInstr').textContent=instr;
-    el.classList.add('show');num.textContent='👀';
-    setTimeout(()=>{let c=3;num.textContent=c;
-      const iv=setInterval(()=>{c--;if(c>0)num.textContent=c;else{clearInterval(iv);el.classList.remove('show');res()}},1000)},2800);
+function initDetector(id,players){
+  const job=LIFE.modelTask.catch(()=>{}).then(async()=>{
+    if(LIFE.inference)await LIFE.inference.catch(()=>{});
+    if(!current(id))throw cancelled();
+    if(A.detector&&A.detectorPlayers===players)return;
+    await tf.ready();if(!current(id))throw cancelled();
+    const modelType=players===2?poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING:poseDetection.movenet.modelType.SINGLEPOSE_LIGHTNING;
+    const config=players===2?{modelType,enableSmoothing:true,minPoseScore:.12,multiPoseMaxDimension:256,enableTracking:true,trackerType:poseDetection.TrackerType.BoundingBox}:{modelType,enableSmoothing:true,minPoseScore:.12};
+    const detector=await poseDetection.createDetector(poseDetection.SupportedModels.MoveNet,config);
+    if(!current(id)){if(detector.dispose)await detector.dispose();throw cancelled();}
+    const previous=A.detector;A.detector=detector;A.detectorPlayers=players;
+    if(previous&&previous.dispose)await previous.dispose();
   });
+  LIFE.modelTask=job;return job;
+}
+function initCanvas(){A.canvas=document.getElementById('gc');A.ctx=A.canvas.getContext('2d');resize();addEventListener('resize',resize);}
+function resize(){if(A.canvas){A.canvas.width=innerWidth;A.canvas.height=innerHeight;}}
+async function doCountdown(instr,id){
+  const el=document.getElementById('cdOverlay'),num=document.getElementById('cdNum');
+  document.getElementById('cdInstr').textContent=instr;el.classList.add('show');
+  num.textContent='Priprav sa';await waitSession(1600,id);
+  for(let n=3;n>0;n--){num.textContent=n;await waitSession(700,id);}
+  if(current(id))el.classList.remove('show');
 }
 
 /* ═════ HUD / TIMER / LIVES / JOKER ═════ */
@@ -474,6 +555,7 @@ function updateHUD(){
   }
 }
 function addScore(n,playerIndex=null){
+  if(A.diff==='baby'&&n<0)return;
   if(isDuel()&&Number.isInteger(playerIndex)){
     A.scores[playerIndex]=Math.max(0,A.scores[playerIndex]+n);
     A.score=A.scores[0]+A.scores[1];
@@ -491,7 +573,7 @@ function addScore(n,playerIndex=null){
   updateHUD();
 }
 function loseLife(playerIndex=null){
-  if(A.mode!=='lives')return;
+  if(A.diff==='baby'||A.mode!=='lives')return;
   const gm=GAME_META[A.gameType];
   if(gm&&(gm.noLives||gm.debug))return;   /* PORT v5: relaxačné + diagnostické režimy */
   if(isDuel()&&Number.isInteger(playerIndex)){
@@ -501,40 +583,63 @@ function loseLife(playerIndex=null){
     A.lives--;updateHUD();if(A.lives<=0)endGame();
   }
 }
-function startTimer(){clearInterval(A.timerID);A.timerID=setInterval(()=>{A.timeLeft--;updateHUD();if(A.timeLeft<=0){clearInterval(A.timerID);endGame()}},1000)}
 
 /* ═════ LOOP ═════ */
-function startLoop(){
-  const loop=async()=>{
-    if(!A.running){A.raf=null;return}
-    try{
-      if(A.detector&&A.video&&A.video.readyState>=2){
-        const t0=performance.now();
-        A.poses=await A.detector.estimatePoses(A.video,{flipHorizontal:false});
-        A.lastInferMs=performance.now()-t0;   /* PORT v5: pre Test dlaní */
-        A.poses=A.poses.filter(p=>(p.score||0)>.12);
+function startLoop(id=LIFE.epoch){
+  let previous=performance.now(),acc=0,requestAt=-Infinity,fpsFrames=0,fpsAt=performance.now();
+  const frame=(now)=>{
+    if(!A.running||!current(id))return;
+    const dt=Math.min(.1,Math.max(0,(now-previous)/1000));previous=now;
+    fpsFrames++;if(now-fpsAt>=1000){A.renderFPS=Math.round(fpsFrames*1000/(now-fpsAt));fpsFrames=0;fpsAt=now;}
+    if(!LIFE.inference&&now-requestAt>30&&A.detector&&A.video&&A.video.readyState>=2){
+      requestAt=now;const detector=A.detector,video=A.video,start=now;
+      const task=Promise.resolve().then(()=>detector.estimatePoses(video,{flipHorizontal:false}));
+      LIFE.inference=task;
+      task.then(poses=>{
+        if(!A.running||!current(id))return;
+        A.lastInferMs=performance.now()-start;
+        A.poses=poses.filter(p=>(p.score===undefined?1:p.score)>.12);A.lastPoseAt=performance.now();
         A.poseOK=A.poses.length>0;
-      }
-    }catch(e){}
-    const led=document.getElementById('poseLed'),lbl=document.getElementById('poseLabel');
-    if(A.poseOK){led.classList.add('on');lbl.textContent=A.players===2?`Hráči detegovaní: ${Math.min(2,A.poses.length)}/2`:'Telo detekované ✓'}
-    else{led.classList.remove('on');lbl.textContent=A.players===2?'Hľadám 2 hráčov... postavte sa vedľa seba':'Hľadám telo... stúp pred kameru'}
-    const{canvas:cv,ctx,poses}=A;
-    ctx.clearRect(0,0,cv.width,cv.height);
-    if(A.game){A.game.update(poses,cv.width,cv.height);A.game.draw(ctx,cv.width,cv.height)}
-    const gmNow=GAME_META[A.gameType];
-    if(A.poseOK&&!(gmNow&&gmNow.debug)){
-      if(A.players===2){
-        const slots=playerPoseSlots(poses,cv.width,cv.height);
-        slots.forEach((pose,i)=>{if(!pose)return;if(A.showSkeleton)drawSkeleton(ctx,pose,cv.width,cv.height,i);drawPalms(ctx,pose,cv.width,cv.height,i)});
-      }else{
-        if(A.showSkeleton)drawSkeleton(ctx,poses[0],cv.width,cv.height,0);
-        drawPalms(ctx,poses[0],cv.width,cv.height,0);
-      }
+      },()=>{
+        if(current(id)){A.poses=[];A.poseOK=false;A.lastPoseAt=0;}
+      }).finally(()=>{if(LIFE.inference===task)LIFE.inference=null;});
     }
-    A.raf=requestAnimationFrame(loop);
+    const fresh=A.poseOK&&now-A.lastPoseAt<300;
+    if(!fresh){A.poses=[];A.poseOK=false;if(A.game&&A.game.jd)A.game.jd.update([],innerWidth,innerHeight);}
+    const led=document.getElementById('poseLed'),label=document.getElementById('poseLabel');
+    led.classList.toggle('on',fresh);
+    label.textContent=fresh?(A.players===2?'Hráči: '+A.poses.length+'/2':'Pohyb pripravený'):'Pauza: ukáž sa kamere';
+    const cv=A.canvas,ctx=A.ctx,poses=A.poses,game=A.game;
+    let ready=fresh;
+    if(A.players===2&&isDuel()&&poses.length<2)ready=false;
+    if(A.gameType==='car'){
+      game.update(poses,cv.width,cv.height,dt);ready=fresh&&game.ready;
+    }else if(ready||GAME_META[A.gameType].debug){
+      acc=Math.min(acc+dt,1/12);
+      while(acc>=1/60&&A.running&&current(id)){
+        A.simTime+=1000/60;
+        game.update(poses,cv.width,cv.height,1/60);acc-=1/60;
+      }
+      if(A.gameType==='runner'&&!game.jd.detector.base)ready=false;
+    }else acc=0;
+    if(!A.running||!current(id))return;
+    ctx.clearRect(0,0,cv.width,cv.height);game.draw(ctx,cv.width,cv.height);
+    if(fresh&&!GAME_META[A.gameType].debug&&A.gameType!=='car'){
+      const slots=A.players===2?playerPoseSlots(poses,cv.width,cv.height):[poses[0]];
+      slots.forEach((p,i)=>{if(p){if(A.showSkeleton)drawSkeleton(ctx,p,cv.width,cv.height,i);drawPalms(ctx,p,cv.width,cv.height,i);}});
+    }
+    if(!ready&&A.gameType!=='car'&&!GAME_META[A.gameType].debug){
+      ctx.save();ctx.fillStyle='rgba(6,14,30,.82)';ctx.fillRect(cv.width*.10,cv.height*.42,cv.width*.8,72);
+      ctx.fillStyle='#fff';ctx.font='700 '+Math.min(23,cv.width*.045)+'px Nunito';ctx.textAlign='center';
+      ctx.fillText(fresh?(A.players===2&&isDuel()?'Čakám na druhého hráča':'Postav sa rovno na kalibráciu'):'Pauza: kamera ťa potrebuje vidieť',cv.width/2,cv.height*.42+43);ctx.restore();
+    }
+    if(ready&&!GAME_META[A.gameType].debug){
+      A.activeSeconds+=dt;A.timeLeft=Math.max(0,60-Math.floor(A.activeSeconds));updateHUD();
+      if((A.mode==='time'&&A.activeSeconds>=60)||A.activeSeconds>=180){endGame();return;}
+    }
+    A.raf=requestAnimationFrame(frame);
   };
-  A.raf=requestAnimationFrame(loop);
+  A.raf=requestAnimationFrame(frame);
 }
 
 /* ═════ MAPOVANIE + ZRKADLO ═════ */
@@ -616,37 +721,14 @@ class Clap{
 
 /* ═════ SKOK/ČUP — podľa BOKOV (nie ramien, aby zdvihnuté ruky neklamali) ═════ */
 class JumpDuck{
-  constructor(){this.base=null;this.state='run'}
-  update(poses,W,H){
-    if(!poses.length)return this.state;
-    const p=poses[0],lh=kp(p,11,W,H),rh=kp(p,12,W,H);
-    let y=null;
-    if(lh&&rh)y=(lh.y+rh.y)/2;else if(lh||rh)y=(lh||rh).y;
-    else{const ls=kp(p,5,W,H),rs=kp(p,6,W,H);if(ls&&rs)y=(ls.y+rs.y)/2;else return this.state}
-    if(this.base===null)this.base=y;
-    if(y<this.base-H*.06)this.state='jump';
-    else if(y>this.base+H*.09)this.state='duck';
-    else{this.state='run';this.base+=(y-this.base)*.02}
-    return this.state;
-  }
+  constructor(){this.detector=new ZairaControls.BodyGesture();this.state='run';}
+  update(poses,W,H){this.state=this.detector.update(poses[0],performance.now());return this.state;}
 }
-
 /* ═════ HOLD-PICK ═════ */
 class HoldPicker{
-  constructor(ms=750){this.ms=ms;this.t=null;this.s=0}
-  check(hands,opts){
-    let hover=null;
-    for(const o of opts){for(const h of hands)
-      if((h.x-o.x)**2+(h.y-o.y)**2<(o.r+palmRadius()*.5)**2){hover=o.id;break}if(hover!==null)break}
-    const now=Date.now();
-    if(hover===null){this.t=null;return{hoverId:null,progress:0,pickedId:null}}
-    if(hover!==this.t){this.t=hover;this.s=now}
-    const pr=Math.min(1,(now-this.s)/this.ms);
-    if(pr>=1){this.t=null;return{hoverId:hover,progress:1,pickedId:hover}}
-    return{hoverId:hover,progress:pr,pickedId:null};
-  }
+  constructor(ms=650){this.core=new ZairaControls.HoldPicker(ms);}
+  check(hands,opts){return this.core.check(hands,opts,gameClock());}
 }
-
 /* ═════ ČASTICE / HELPERS ═════ */
 function burstInto(arr,x,y,col,n=16){for(let i=0;i<n;i++){const a=(6.28/n)*i;
   arr.push({x,y,vx:Math.cos(a)*(3.5+Math.random()*5.5),vy:Math.sin(a)*(3.5+Math.random()*5.5),col,r:4+Math.random()*4,life:1})}}
@@ -716,7 +798,7 @@ function maxOnScreen(){return A.diff==='baby'?4:A.diff==='kid'?6:8}
    interakcii — actx() sa preto prvýkrát volá v startGame(), ktorý je vždy
    spustený klikom na kartu hry. Hudba je OFF by default. Žiadne agresívne
    ani trestajúce zvuky — wrong je jemný nízky tón, nie buzzer. */
-const SND={ctx:null,on:true,music:false,musicTimer:null,step:0};
+const SND={ctx:null,on:true,music:true,musicTimer:null,step:0};
 function actx(){
   if(!SND.ctx){
     try{SND.ctx=new (window.AudioContext||window.webkitAudioContext)()}
@@ -737,22 +819,16 @@ function tone(freq,dur,type='sine',vol=.2,slideTo=null){
   }catch(e){}
 }
 function sfxPop(){tone(660,.12,'triangle',.24,240)}
-function sfxCorrect(){tone(880,.11,'triangle',.20);setTimeout(()=>tone(1175,.13,'triangle',.16),80)}
+function sfxCorrect(){tone(880,.11,'triangle',.20);sessionTimeout(()=>tone(1175,.13,'triangle',.16),80)}
 function sfxWrong(){tone(240,.20,'sine',.13,160)}
-function sfxCoin(){tone(1046,.08,'square',.13);setTimeout(()=>tone(1568,.10,'square',.11),65)}
-function sfxJoker(){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>tone(f,.13,'triangle',.15),i*60))}
-const MUSIC_STEPS=[0,4,7,12,7,4,0,4];
+function sfxCoin(){tone(1046,.08,'square',.13);sessionTimeout(()=>tone(1568,.10,'square',.11),65)}
+function sfxJoker(){[523,659,784,1047].forEach((f,i)=>sessionTimeout(()=>tone(f,.13,'triangle',.15),i*60))}
 function musicStart(){
-  musicStop();
-  if(!SND.on||!SND.music)return;
-  SND.musicTimer=setInterval(()=>{
-    if(!SND.on||!SND.music||!A.running)return;
-    const base=196*Math.pow(2,MUSIC_STEPS[SND.step%MUSIC_STEPS.length]/12);
-    tone(base,.40,'sine',.04);
-    SND.step++;
-  },460);
+  musicStop();if(!SND.on||!SND.music)return;const c=actx();if(!c)return;
+  if(!SND.score)SND.score=ZairaMusic(c,.20);SND.score.start();
 }
-function musicStop(){if(SND.musicTimer){clearInterval(SND.musicTimer);SND.musicTimer=null}}
+function musicStop(){if(SND.score)SND.score.stop();}
+
 function toggleSound(){
   SND.on=!SND.on;
   const b=document.getElementById('sndBtn');
@@ -774,86 +850,75 @@ function isBabySoft(){return A.diff==='baby'}
 
 /* ═════ REGISTRY ═════ */
 function initGame(t){
-  const m={balloons:BalloonGame,sort:SortGame,space:SpaceGame,runner:RunnerGame,boat:BoatGame,car:CarGame,
+  const m={balloons:BalloonGame,sort:SortGame,space:SpaceGame,runner:RunnerGame,boat:BoatGame,car:ZairaCockpit({getState:()=>A,Controls:ZairaControls,score:addScore,life:loseLife,pop:sfxPop,coin:sfxCoin,now:()=>performance.now()}),
     colorpop:ColorPopGame,colorsort:ColorSortGame,colormatch:ColorMatchGame,
     count:CountGame,order:OrderGame,math:MathGame,glass:GlassGame,debug:DebugGame,
-    hunt:HuntGame,nest:NestGame};
-  A.game=new m[t]();
+    };
+  A.game=new m[t]();document.getElementById('game').classList.toggle('driving',t==='car');
 }
 
 /* ═════ 1) BALÓNY ZHORA — SOLO / DUO ═════ */
 class BalloonGame{
   constructor(){
-    this.balls=[];this.parts=[];this.last=0;this.claps=[new Clap(),new Clap()];this.flashJoker=0;this.nextLane=0;
-    if(isDuel()){for(let i=0;i<3;i++){this.spawn(i*.18,0);this.spawn(i*.18+.08,1)}}
-    else for(let i=0;i<5;i++)this.spawn(i*.16,null);
+    this.balls=[];this.parts=[];this.rings=[];this.last=-1000;this.age=0;
+    this.claps=[new Clap(),new Clap()];this.flashJoker=0;this.nextLane=0;
+    const count=isDuel()?4:4;
+    for(let i=0;i<count;i++)this.spawn(.20+i*.15,isDuel()?i%2:null);
   }
-  spawn(off=0,owner=null){
-    const duel=isDuel();
-    if(duel&&owner===null){owner=this.nextLane;this.nextLane=1-this.nextLane}
-    const r=(48+Math.random()*18)*D().size;
-    let x,lane=null;
-    if(duel){
-      /* DUO — pôvodná logika: každý hráč má svoju polovicu cez owner */
-      const minX=owner===0?.06:.54, maxX=owner===0?.46:.94;
-      let tries=0;
-      do{x=minX+Math.random()*(maxX-minX);tries++}
-      while(tries<50&&this.balls.some(b=>b.owner===owner&&Math.abs(b.x-x)<.15&&b.y<.35));
-    }else{
-      /* SOLO — PORT v5: pruhový spawner, garantuje odstup */
-      if(this.balls.length>=maxOnScreen())return;
-      const slot=pickLane(this.balls,-.16-off,.5);
-      if(!slot)return;                       /* plno → radšej nespawnuj */
-      lane=slot.lane;x=slot.x;
+  spawn(y=-.12,owner=null){
+    const W=A.canvas.width,H=A.canvas.height,p=ZairaControls.balloonProfile(A.tempo,A.diff,W,H);
+    const duel=isDuel(),half=duel?W/2:W,margin=p.r+12,lanes=Math.max(1,Math.floor((half-24)/(p.r*2+14)));
+    if(this.balls.filter(b=>!duel||b.owner===owner).length>=p.max)return;
+    const x0=duel?(owner||0)*.5:0,xspan=duel?.5:1,candidates=[];
+    for(let i=0;i<lanes;i++){
+      const x=lanes===1?x0+xspan/2:x0+(margin+(half-2*margin)*i/(lanes-1))/W;
+      if(!this.balls.some(b=>Math.hypot((b.x-x)*W,(b.y-y)*H)<p.r+b.r+14))candidates.push(x);
     }
-    this.balls.push({x,lane,y:-.16-off,vx:duel?(Math.random()-.5)*.0008:0,
-      vy:(.0052+.003*Math.random())*D().speed,r,owner,
-      col:VIVID[Math.floor(Math.random()*VIVID.length)],w:Math.random()*6.28,ws:.025+Math.random()*.02,id:Math.random()});
+    if(!candidates.length)return;
+    this.balls.push({x:candidates[Math.floor(Math.random()*candidates.length)],y,r:p.r,owner,col:VIVID[Math.floor(Math.random()*VIVID.length)],phase:Math.random()*6.28});
   }
-  activateJoker(player,poses,W,H){
-    if(isDuel()){
-      if(A.playerJokers[player]<=0||!poses[player]||!this.claps[player].check([poses[player]],W,H))return;
-      A.playerJokers[player]--;this.flashJoker=1;sfxJoker();
-      this.balls=this.balls.filter(b=>{if(b.owner===player){burstInto(this.parts,b.x*W,b.y*H,b.col);addScore(10,player);return false}return true});
-      updateHUD();
-    }else if(A.jokers>0&&this.claps[0].check(poses.filter(Boolean),W,H)){
-      A.jokers--;this.flashJoker=1;sfxJoker();this.balls.forEach(b=>{burstInto(this.parts,b.x*W,b.y*H,b.col);addScore(10)});this.balls=[];updateHUD();
-    }
+  popBall(b,W,H,player){
+    burstInto(this.parts,b.x*W,b.y*H,b.col,18);
+    this.rings.push({x:b.x*W,y:b.y*H,r:b.r,t:0,col:b.col});
+    addScore(10,player);sfxPop();
   }
-  update(poses,W,H){
-    const now=Date.now(),duel=isDuel();
-    const progress=duel?A.scores[0]+A.scores[1]:A.score;
-    const rate=Math.max(380,1150-progress*1.8)*Math.max(.75,D().rate*.75);
-    if(now-this.last>rate){
-      if(duel){this.spawn(0,0);this.spawn(.08,1)}else this.spawn();
-      this.last=now;
+  activateJoker(player,slots,W,H){
+    const duel=isDuel(),pose=duel?slots[player]:slots[0];
+    const available=duel?A.playerJokers[player]:A.jokers;
+    if(!available||!pose||!this.claps[player].check([pose],W,H))return;
+    if(duel)A.playerJokers[player]--;else A.jokers--;
+    sfxJoker();
+    this.balls=this.balls.filter(b=>{if(!duel||b.owner===player){this.popBall(b,W,H,duel?player:null);return false;}return true;});
+    updateHUD();
+  }
+  update(poses,W,H,dt=1/60){
+    this.age+=dt;const p=ZairaControls.balloonProfile(A.tempo,A.diff,W,H),duel=isDuel();
+    if(this.age*1000-this.last>=p.interval){
+      if(duel){this.spawn(-.12,0);this.spawn(-.12,1);}else this.spawn();
+      this.last=this.age*1000;
     }
     const slots=duel?playerPoseSlots(poses,W,H):[poses[0]||null,null];
-    if(duel){this.activateJoker(0,slots,W,H);this.activateJoker(1,slots,W,H)}else this.activateJoker(0,poses,W,H);
-    const palmsByPlayer=duel?slots.map(p=>p?getPalms([p],W,H):[]):[getPalms(poses,W,H)];
+    this.activateJoker(0,slots,W,H);if(duel)this.activateJoker(1,slots,W,H);
+    const hands=duel?slots.map(p=>p?getPalms([p],W,H):[]):[getPalms(poses,W,H)];
     this.balls=this.balls.filter(b=>{
-      b.w+=b.ws;b.x+=b.vx;b.y+=b.vy;
-      const bx=b.x*W+Math.sin(b.w)*7,by=b.y*H;
-      const pi=duel?b.owner:0;
-      for(const p of palmsByPlayer[pi])if(palmHit(p,bx,by,b.r)){
-        burstInto(this.parts,bx,by,b.col);addScore(10,duel?pi:null);sfxPop();return false;
+      b.y+=dt/p.seconds;
+      for(const hand of hands[duel?b.owner:0]){
+        if(palmHit(hand,b.x*W,b.y*H,b.r)){this.popBall(b,W,H,duel?b.owner:null);return false;}
       }
-      if(b.y>=1.2){if(!isBabySoft())loseLife(duel?pi:null);return false}
-      return true;
+      if(b.y>1.12){loseLife(duel?b.owner:null);return false;}return true;
     });
-    if(duel)separate(this.balls,W,H);   /* SOLO nepotrebuje — pruhy to riešia */
-    this.parts=stepParticles(this.parts);if(this.flashJoker>0)this.flashJoker-=.04;
+    this.parts=stepParticles(this.parts);
+    this.rings=this.rings.filter(r=>(r.t+=dt)<.35);
   }
   draw(ctx,W,H){
+    const bg=ctx.createRadialGradient(W*.5,H*.4,10,W*.5,H*.4,Math.max(W,H));
+    bg.addColorStop(0,'rgba(44,58,99,.62)');bg.addColorStop(1,'rgba(6,12,28,.9)');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
     if(isDuel()){
-      ctx.save();ctx.fillStyle='rgba(0,229,255,.055)';ctx.fillRect(0,0,W/2,H);ctx.fillStyle='rgba(255,64,129,.055)';ctx.fillRect(W/2,0,W/2,H);
-      ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=3;ctx.setLineDash([16,14]);ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();ctx.setLineDash([]);
-      ctx.font=`bold ${Math.min(24,W*.038)}px Fredoka One,cursive`;ctx.textAlign='center';ctx.fillStyle='#00e5ff';ctx.fillText('HRÁČ 1',W*.25,H*.15);ctx.fillStyle='#ff4081';ctx.fillText('HRÁČ 2',W*.75,H*.15);ctx.restore();
+      ctx.save();ctx.strokeStyle='rgba(220,240,255,.4)';ctx.setLineDash([8,12]);ctx.beginPath();ctx.moveTo(W/2,100);ctx.lineTo(W/2,H-70);ctx.stroke();ctx.restore();
     }
-    this.balls.forEach(b=>drawBalloon(ctx,b.x*W+Math.sin(b.w)*7,b.y*H,b.r,b.col));
-    drawParticles(ctx,this.parts);
-    if(this.flashJoker>0){ctx.fillStyle=`rgba(255,234,0,${this.flashJoker*.35})`;ctx.fillRect(0,0,W,H)}
-    if(A.score<40)tip(ctx,W,H,isDuel()?'P1 vľavo · P2 vpravo · balóny padajú zhora 👥':'Balóny padajú zhora — praskaj ich dlaňami! 🖐️');
+    this.balls.forEach(b=>drawBalloon(ctx,b.x*W,b.y*H,b.r,b.col));drawParticles(ctx,this.parts);
+    this.rings.forEach(r=>{ctx.save();ctx.globalAlpha=1-r.t/.35;ctx.strokeStyle=r.col;ctx.lineWidth=4*(1-r.t/.35);ctx.beginPath();ctx.arc(r.x,r.y,r.r+r.t*100,0,Math.PI*2);ctx.stroke();ctx.restore();});
+    if(this.age<5)tip(ctx,W,H,'Praskaj balóny dlaňami');
   }
 }
 
@@ -865,7 +930,7 @@ class SortGame{
   spawn(){const f=Math.random()<.5,L=f?FRUITS:VEGGIES;
     this.items.push({x:.1+Math.random()*.8,y:-.05,vy:(.0026+Math.random()*.002)*D().speed,e:L[Math.floor(Math.random()*L.length)],f})}
   update(poses,W,H){
-    const now=Date.now();
+    const now=gameClock();
     const rate=Math.max(1000,2700-A.score*8)*D().rate;
     if(now-this.last>rate){this.spawn();this.last=now}
     this.items=this.items.filter(it=>{
@@ -892,7 +957,7 @@ class SortGame{
     this.fb.forEach(f=>{ctx.save();ctx.globalAlpha=f.life;
       emoji(ctx,f.e,f.x,f.y,40);
       ctx.font=`bold ${Math.min(26,W*.045)}px Fredoka One,cursive`;ctx.textAlign='center';
-      ctx.fillStyle=f.ok?'#00e676':'#ff1744';ctx.fillText(f.ok?'+15 ✓':'-5 ✗',f.x,f.y-48);ctx.restore()});
+      ctx.fillStyle=f.ok?'#00e676':'#ff1744';ctx.fillText(f.ok?'+15 ✓':(isBabySoft()?'Skús znova':'-5 ✗'),f.x,f.y-48);ctx.restore()});
   }
 }
 
@@ -902,7 +967,7 @@ class SpaceGame{
     this.stars=Array.from({length:80},()=>({x:Math.random(),y:Math.random(),sp:.002+Math.random()*.007,r:Math.random()*1.6+.4,b:Math.random()}));
     this.lastShot=0;this.lastE=0;this.E=['👾','🛸','☄️','💀','🌑','👽']}
   update(poses,W,H){
-    const now=Date.now();
+    const now=gameClock();
     let cx=null;
     if(poses.length){const p=poses[0],lh=kp(p,11,W,H),rh=kp(p,12,W,H);
       if(lh&&rh)cx=(lh.x+rh.x)/2/W;else{const n=kp(p,0,W,H);if(n)cx=n.x/W}}
@@ -962,8 +1027,9 @@ class RunnerGame{
     else this.obs.push({x:1.08,type:'coin',e:'🪙',done:false}); // minca — zbiera sa V BEHU (vzpriamene)!
   }
   update(poses,W,H){
-    const now=Date.now();
+    const now=gameClock();
     this.state=this.jd.update(poses,W,H);
+    if(!this.jd.detector.base)return;
     const rate=Math.max(1100,2400-A.score*7)*D().rate;
     if(now-this.last>rate){this.spawn();this.last=now}
     const speed=(.006+Math.min(.005,A.score*.00003))*D().speed;
@@ -1060,7 +1126,7 @@ class RunnerGame{
 class BoatGame{
   constructor(){this.bx=.5;this.items=[];this.last=0;this.flash=0;this.parts=[];this.wave=0}
   update(poses,W,H){
-    const now=Date.now();
+    const now=gameClock();
     let cx=null;
     if(poses.length){const p=poses[0],lh=kp(p,11,W,H),rh=kp(p,12,W,H);
       if(lh&&rh)cx=(lh.x+rh.x)/2/W;else{const n=kp(p,0,W,H);if(n)cx=n.x/W}}
@@ -1101,65 +1167,11 @@ class BoatGame{
 }
 
 /* ═════ 6) AUTO ═════ */
-class CarGame{
-  constructor(){this.cx=.5;this.items=[];this.last=0;this.flash=0;this.parts=[];this.dash=0;this.steer=0}
-  update(poses,W,H){
-    const now=Date.now();
-    let steered=false;
-    if(poses.length){
-      const p=poses[0],lw=kp(p,9,W,H),rw=kp(p,10,W,H);
-      if(lw&&rw){
-        const ang=Math.atan2(rw.y-lw.y,rw.x-lw.x);
-        this.steer=Math.max(-1,Math.min(1,ang/(Math.PI/4)));
-        this.cx+=this.steer*.013;steered=true;
-      }
-    }
-    if(!steered&&poses.length){const n=kp(poses[0],0,W,H);if(n)this.cx+=(n.x/W-this.cx)*.1}
-    this.cx=Math.max(.16,Math.min(.84,this.cx));
-    this.dash+=.02;
-    const rate=Math.max(700,1500-A.score*4)*D().rate;
-    if(now-this.last>rate){
-      const coin=Math.random()<.45;
-      const lane=.22+Math.floor(Math.random()*3)*.28;
-      this.items.push({x:lane+(Math.random()-.5)*.06,y:-.08,vy:(.005+Math.random()*.003)*D().speed,coin,e:coin?'🪙':['🚙','🚌','🛻','🚧'][Math.floor(Math.random()*4)]});
-      this.last=now;
-    }
-    const cy=.82;
-    this.items=this.items.filter(it=>{
-      it.y+=it.vy;
-      if(Math.abs(it.y-cy)<.055&&Math.abs(it.x-this.cx)<.08){
-        if(it.coin){addScore(10);burstInto(this.parts,it.x*W,it.y*H,'#ffea00',10)}
-        else{addScore(-10);this.flash=1;loseLife()}
-        return false}
-      return it.y<1.15});
-    this.parts=stepParticles(this.parts);
-    if(this.flash>0)this.flash-=.05;
-  }
-  draw(ctx,W,H){
-    ctx.fillStyle='rgba(38,50,56,.92)';ctx.fillRect(W*.1,0,W*.8,H);
-    ctx.fillStyle='rgba(56,142,60,.95)';ctx.fillRect(0,0,W*.1,H);ctx.fillRect(W*.9,0,W*.1,H);
-    ctx.strokeStyle='#ffea00';ctx.lineWidth=4;
-    ctx.beginPath();ctx.moveTo(W*.1+3,0);ctx.lineTo(W*.1+3,H);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(W*.9-3,0);ctx.lineTo(W*.9-3,H);ctx.stroke();
-    ctx.strokeStyle='rgba(255,255,255,.85)';ctx.lineWidth=6;ctx.setLineDash([36,32]);
-    ctx.lineDashOffset=-this.dash*150;
-    [.365,.635].forEach(lx=>{ctx.beginPath();ctx.moveTo(W*lx,0);ctx.lineTo(W*lx,H);ctx.stroke()});
-    ctx.setLineDash([]);
-    this.items.forEach(it=>emoji(ctx,it.e,it.x*W,it.y*H,(it.coin?46:64)*D().size));
-    ctx.save();ctx.translate(this.cx*W,.82*H);ctx.rotate(this.steer*.28);
-    emoji(ctx,'🚗',0,0,72*D().size);ctx.restore();
-    drawParticles(ctx,this.parts);
-    if(this.flash>0){ctx.fillStyle=`rgba(255,23,68,${this.flash*.32})`;ctx.fillRect(0,0,W,H)}
-    ctx.save();ctx.translate(W/2,H*.13);ctx.rotate(this.steer*.9);
-    emoji(ctx,'🛞',0,0,44);ctx.restore();
-    tip(ctx,W,H,'Otáčaj volantom 🫲🫱 · 🪙 zbieraj · autám sa vyhni');
-  }
-}
 
 /* ═════ 7) FAREBNÝ LOV ═════ */
 class ColorPopGame{
   constructor(){this.balls=[];this.parts=[];this.last=0;this.clap=new Clap();this.flashJoker=0;
-    this.target=COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];this.lastSwitch=Date.now()}
+    this.target=COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];this.lastSwitch=gameClock()}
   spawn(){
     const c=Math.random()<.45?this.target:COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];
     /* PORT v5: pruhový spawner — cieľová farba dostane širšie čisté okno,
@@ -1172,7 +1184,7 @@ class ColorPopGame{
       vy:(.0048+.0028*Math.random())*D().speed,r:(44+Math.random()*16)*D().size,c,w:Math.random()*6.28});
   }
   update(poses,W,H){
-    const now=Date.now();
+    const now=gameClock();
     if(now-this.lastSwitch>15000){this.target=COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];this.lastSwitch=now;
       this.balls.forEach(b=>b.isTarget=b.c.hex===this.target.hex)}
     const rate=Math.max(500,1250-A.score*2.2)*Math.max(.75,D().rate*.78);
@@ -1217,11 +1229,11 @@ class ColorPopGame{
 
 /* ═════ 8) FAREBNÉ TRIEDENIE ═════ */
 class ColorSortGame{
-  constructor(){this.pick();this.items=[];this.fb=[];this.last=0;this.lastSwitch=Date.now()}
+  constructor(){this.pick();this.items=[];this.fb=[];this.last=0;this.lastSwitch=gameClock()}
   pick(){const s=[...COLOR_DEFS].sort(()=>Math.random()-.5);this.left=s[0];this.right=s[1]}
   update(poses,W,H){
-    const now=Date.now();
-    if(now-this.lastSwitch>20000){this.pick();this.lastSwitch=now}
+    const now=gameClock();
+    if(now-this.lastSwitch>20000&&this.items.length===0){this.pick();this.lastSwitch=now}
     const rate=Math.max(1100,2400-A.score*7)*D().rate;
     if(now-this.last>rate){
       const useL=Math.random()<.5;
@@ -1249,7 +1261,7 @@ class ColorSortGame{
       ctx.beginPath();ctx.arc(it.x*W,it.y*H,it.r,0,6.28);ctx.fillStyle=g;ctx.fill();ctx.restore()});
     this.fb.forEach(f=>{ctx.save();ctx.globalAlpha=f.life;
       ctx.font=`bold ${Math.min(28,W*.05)}px Fredoka One,cursive`;ctx.textAlign='center';
-      ctx.fillStyle=f.ok?'#00e676':'#ff1744';ctx.fillText(f.ok?'+15 ✓':'-5 ✗',f.x,f.y);ctx.restore()});
+      ctx.fillStyle=f.ok?'#00e676':'#ff1744';ctx.fillText(f.ok?'+15 ✓':(isBabySoft()?'Skús znova':'-5 ✗'),f.x,f.y);ctx.restore()});
     if(A.poses.length){
       const lp=palm(A.poses[0],'L',innerWidth,innerHeight),rp=palm(A.poses[0],'R',innerWidth,innerHeight);
       if(lp){ctx.beginPath();ctx.arc(lp.x,lp.y,42,0,6.28);ctx.strokeStyle=this.left.hex;ctx.lineWidth=7;ctx.stroke()}
@@ -1266,9 +1278,9 @@ class ColorSortGame{
 /* ═════ 9) NÁJDI FARBU ═════ */
 class ColorMatchGame{
   constructor(){this.bubbles=[];this.parts=[];this.last=0;this.clap=new Clap();this.flashJoker=0;
-    this.target=COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];this.lastSwitch=Date.now()}
+    this.target=COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];this.lastSwitch=gameClock()}
   update(poses,W,H){
-    const now=Date.now();
+    const now=gameClock();
     if(now-this.lastSwitch>12000){this.target=COLOR_DEFS[Math.floor(Math.random()*COLOR_DEFS.length)];this.lastSwitch=now;
       this.bubbles.forEach(b=>b.isTarget=b.c.hex===this.target.hex)}
     const rate=Math.max(520,1200)*Math.max(.75,D().rate*.78);
@@ -1329,22 +1341,18 @@ const ANIMALS=['🐐','🐑','🐄','🐖','🐔','🦆','🐰','🐱','🐶','�
 class CountGame{
   constructor(){this.picker=new HoldPicker(750);this.parts=[];this.newRound()}
   newRound(){
-    this.n=1+Math.floor(Math.random()*6);
+    this.n=1+Math.floor(Math.random()*(A.cognitive==='baby'?3:A.cognitive==='kid'?8:12));
     this.animal=ANIMALS[Math.floor(Math.random()*ANIMALS.length)];
-    this.spots=[];let tries=0;
-    while(this.spots.length<this.n&&tries<200){
-      const s={x:.15+Math.random()*.7,y:.25+Math.random()*.33};
-      if(!this.spots.some(o=>Math.hypot(o.x-s.x,o.y-s.y)<.15))this.spots.push(s);
-      tries++;
-    }
+    this.spots=[];
+    const cols=Math.min(4,this.n),rows=Math.ceil(this.n/cols);
+    for(let i=0;i<this.n;i++)this.spots.push({x:.16+(i%cols+.5)*.68/cols,y:.25+(Math.floor(i/cols)+.5)*.30/rows});
     const o=new Set([this.n]);
     while(o.size<3)o.add(Math.max(1,this.n+Math.floor(Math.random()*5)-2));
     this.options=[...o].sort(()=>Math.random()-.5);
   }
   update(poses,W,H){
     const palms=getPalms(poses,W,H);
-    const r=Math.min(70,W*.1)*Math.max(1,D().size*.9);
-    const opts=this.options.map((v,i)=>({x:W*(.25+i*.25),y:H*.8,r,id:v}));
+    const opts=ZairaControls.answerLayout(this.options,W,H,.8);
     this.res=this.picker.check(palms,opts);
     if(this.res.pickedId!==null){
       if(this.res.pickedId===this.n){addScore(20);burstInto(this.parts,W/2,H*.5,'#ffea00',18)}
@@ -1358,7 +1366,7 @@ class CountGame{
     ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=10;
     ctx.fillStyle='#fff';ctx.textAlign='center';
     ctx.fillText(`Koľko je tu ${this.animal}?`,W/2,H*.16);ctx.restore();
-    const sz=Math.min(74,W*.12)*D().size;
+    const sz=Math.min(62,W*.12,H*.10);
     this.spots.forEach(s=>emoji(ctx,this.animal,s.x*W,s.y*H,sz));
     (this._opts||[]).forEach(o=>{
       const hov=this.res&&this.res.hoverId===o.id;
@@ -1379,66 +1387,54 @@ class CountGame{
 
 /* ═════ 11) PORADIE ═════ */
 class OrderGame{
-  constructor(){this.parts=[];this.newSet()}
+  constructor(){this.parts=[];this.picker=new HoldPicker(350);this.newSet();}
   newSet(){
-    this.next=1;this.balls=[];
-    const cols=[...VIVID].sort(()=>Math.random()-.5);
-    for(let n=1;n<=5;n++){
-      let x,y,tries=0;
-      do{x=.12+Math.random()*.76;y=.28+Math.random()*.4;tries++}
-      while(tries<100&&this.balls.some(b=>Math.hypot(b.x-x,b.y-y)<.19));
-      this.balls.push({n,x,y,r:52*D().size,col:cols[n-1],w:Math.random()*6.28,popped:false});
+    this.next=1;this.balls=[];this.total=A.cognitive==='baby'?3:A.cognitive==='kid'?5:8;
+    const W=A.canvas.width,H=A.canvas.height,cols=Math.min(this.total,W<600?3:4),rows=Math.ceil(this.total/cols);
+    const positions=Array.from({length:this.total},(_,i)=>i);
+    for(let i=positions.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[positions[i],positions[j]]=[positions[j],positions[i]];}
+    const r=Math.min(48,W/(cols*2.7),H/(rows*7.5));
+    for(let i=0;i<this.total;i++){
+      const slot=positions[i];
+      this.balls.push({n:i+1,x:(slot%cols+.5)/cols,y:.27+(Math.floor(slot/cols)+.5)*.40/rows,r,col:VIVID[i%VIVID.length],popped:false});
     }
-    this.shake=null;
+    this.shake=null;this.waiting=false;
   }
   update(poses,W,H){
     const palms=getPalms(poses,W,H);
-    for(const b of this.balls){
-      if(b.popped)continue;
-      b.w+=.03;
-      const bx=b.x*W+Math.sin(b.w)*7,by=b.y*H+Math.cos(b.w*1.3)*5;
-      for(const p of palms){
-        if(palmHit(p,bx,by,b.r)){
-          if(b.n===this.next){b.popped=true;burstInto(this.parts,bx,by,b.col);addScore(10);this.next++;
-            if(this.next>5){addScore(25);setTimeout(()=>this.newSet(),400)}}
-          else{this.shake={n:b.n,t:Date.now()}}
-          break}
-      }
+    const opts=this.balls.filter(b=>!b.popped).map(b=>({x:b.x*W,y:b.y*H,r:b.r,id:b.n}));
+    this.res=this.picker.check(palms,opts);
+    if(this.res.pickedId!==null&&!this.waiting){
+      const b=this.balls.find(b=>b.n===this.res.pickedId);
+      if(b&&b.n===this.next){
+        b.popped=true;burstInto(this.parts,b.x*W,b.y*H,b.col);addScore(10);sfxPop();this.next++;
+        if(this.next>this.total){this.waiting=true;sessionTimeout(()=>this.newSet(),600);}
+      }else if(b)this.shake={n:b.n,t:gameClock()};
     }
     this.parts=stepParticles(this.parts);
   }
   draw(ctx,W,H){
     this.balls.forEach(b=>{
-      if(b.popped)return;
-      let bx=b.x*W+Math.sin(b.w)*7,by=b.y*H+Math.cos(b.w*1.3)*5;
-      if(this.shake&&this.shake.n===b.n&&Date.now()-this.shake.t<400)bx+=Math.sin(Date.now()*.05)*9;
-      drawBalloon(ctx,bx,by,b.r,b.col);
-      ctx.save();ctx.font=`bold ${b.r*.95}px Fredoka One,cursive`;
-      ctx.textAlign='center';ctx.textBaseline='middle';
-      ctx.strokeStyle='rgba(0,0,0,.6)';ctx.lineWidth=5;ctx.strokeText(b.n,bx,by);
-      ctx.fillStyle='#fff';ctx.fillText(b.n,bx,by);ctx.restore()});
-    drawParticles(ctx,this.parts);
-    ctx.save();ctx.font=`bold ${Math.min(28,W*.05)}px Fredoka One,cursive`;
-    ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=10;
-    ctx.fillStyle='#ffea00';ctx.textAlign='center';
-    ctx.fillText(this.next<=5?`Teraz praskni: ${this.next}`:'Výborne! 🎉',W/2,H*.14);ctx.restore();
+      if(b.popped)return;let x=b.x*W;
+      if(this.shake&&this.shake.n===b.n&&gameClock()-this.shake.t<300)x+=Math.sin(gameClock()*.05)*5;
+      drawBalloon(ctx,x,b.y*H,b.r,b.col);
+      ctx.save();ctx.font='bold '+b.r+'px Fredoka One,cursive';ctx.textAlign='center';ctx.textBaseline='middle';
+      ctx.fillStyle='#fff';ctx.strokeStyle='rgba(0,0,0,.6)';ctx.lineWidth=4;ctx.strokeText(b.n,x,b.y*H);ctx.fillText(b.n,x,b.y*H);ctx.restore();
+    });
+    drawParticles(ctx,this.parts);ctx.save();ctx.font='bold '+Math.min(28,W*.05)+'px Fredoka One,cursive';ctx.fillStyle='#ffe3a0';ctx.textAlign='center';
+    ctx.fillText(this.next<=this.total?'Teraz nájdi: '+this.next:'Výborne!',W/2,H*.17);ctx.restore();
   }
 }
-
 /* ═════ 12) SČÍTANIE ═════ */
 class MathGame{
   constructor(){this.picker=new HoldPicker(750);this.parts=[];this.newRound()}
   newRound(){
-    this.a=1+Math.floor(Math.random()*5);this.b=1+Math.floor(Math.random()*5);
-    this.ans=this.a+this.b;
-    const o=new Set([this.ans]);
-    while(o.size<3)o.add(Math.max(1,this.ans+Math.floor(Math.random()*5)-2));
-    this.options=[...o].sort(()=>Math.random()-.5);
+    Object.assign(this,ZairaControls.mathRound(A.cognitive));
   }
+
   update(poses,W,H){
     const palms=getPalms(poses,W,H);
-    const r=Math.min(66,W*.095)*Math.max(1,D().size*.9);
-    const opts=this.options.map((v,i)=>({x:W*(.25+i*.25),y:H*.74,r,id:v}));
+    const opts=ZairaControls.answerLayout(this.options,W,H,.74);
     this.res=this.picker.check(palms,opts);
     if(this.res.pickedId!==null){
       if(this.res.pickedId===this.ans){addScore(20);burstInto(this.parts,W/2,H*.4,'#00e676',18)}
@@ -1452,9 +1448,9 @@ class MathGame{
     ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=12;
     ctx.font=`bold ${Math.min(70,W*.13)}px Fredoka One,cursive`;
     ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(`${this.a} + ${this.b} = ?`,W/2,H*.28);
+    ctx.fillText(`${this.a} ${this.op} ${this.b} = ?`,W/2,H*.28);
     ctx.font=`${Math.min(34,W*.055)}px serif`;
-    ctx.fillText('🔵'.repeat(this.a)+'  '+'🔴'.repeat(this.b),W/2,H*.43);
+    if(A.cognitive==='baby')ctx.fillText('🔵'.repeat(this.a)+'  '+'🔴'.repeat(this.b),W/2,H*.43);
     ctx.restore();
     (this._opts||[]).forEach(o=>{
       const hov=this.res&&this.res.hoverId===o.id;
@@ -1470,308 +1466,6 @@ class MathGame{
       ctx.restore()});
     drawParticles(ctx,this.parts);
     tip(ctx,W,H,'Podrž dlaň na správnej odpovedi ✋');
-  }
-}
-
-/* ═════════════════════════════════════════════════════════════
-   DINO v6 — SPOLOČNÉ POMÔCKY PRE OBE DINO HRY
-   ═════════════════════════════════════════════════════════════ */
-/* Vráti dlane KONKRÉTNEHO hráča. V SOLO (1 hráč) vracia obe dlane
-   jedinej detegovanej osoby, takže obe hry sú hrateľné aj sám. */
-function palmsOfPlayer(poses,W,H,idx){
-  if(A.players===2){
-    const slots=playerPoseSlots(poses,W,H);
-    const pose=slots[idx];
-    return pose?getPalms([pose],W,H):[];
-  }
-  return poses[0]?getPalms([poses[0]],W,H):[];
-}
-/* Kreslí deliacu čiaru medzi polovicami + menovky strán */
-function drawSplit(ctx,W,H,leftLabel,rightLabel,leftCol,rightCol){
-  ctx.save();
-  ctx.fillStyle='rgba(0,229,255,.07)';ctx.fillRect(0,0,W/2,H);
-  ctx.fillStyle='rgba(255,64,129,.07)';ctx.fillRect(W/2,0,W/2,H);
-  ctx.strokeStyle='rgba(255,255,255,.35)';ctx.lineWidth=3;ctx.setLineDash([14,12]);
-  ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H);ctx.stroke();ctx.setLineDash([]);
-  const fs=Math.min(20,W*.034);
-  ctx.font='bold '+fs+'px Nunito,sans-serif';ctx.textAlign='center';
-  ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=8;
-  ctx.fillStyle=leftCol;ctx.fillText(leftLabel,W*.25,H-16);
-  ctx.fillStyle=rightCol;ctx.fillText(rightLabel,W*.75,H-16);
-  ctx.restore();
-}
-
-/* ═════════════════════════════════════════════════════════════
-   DINO 1) 🦖 LOV KORISTI — DUEL, delená obrazovka
-   ─────────────────────────────────────────────────────────────
-   Asymetrické role (férové aj pri rozdielnom veku hráčov):
-     P1 = T-REX  — pomalšia, VEĽKÁ korisť, +25 bodov
-     P2 = RAPTOR — rýchla, MALÁ korisť, +10 bodov
-   Kosť ☠️ = necielový objekt: mínus body (v baby režime 0) a život.
-   Každý hráč loví IBA na svojej polovici — dlane druhého hráča
-   sa na cudzej polovici ignorujú.
-   ═════════════════════════════════════════════════════════════ */
-const HUNT_PREY={
-  0:['🦣','🐃','🦬','🐗'],          /* T-Rex: veľká korisť */
-  1:['🦎','🐁','🐇','🐸','🥚']      /* Raptor: rýchla malá korisť */
-};
-class HuntGame{
-  constructor(){
-    this.items=[];this.parts=[];this.last=[0,0];
-    this.claps=[new Clap(),new Clap()];
-    this.flash=[0,0];this.jokerFlash=[0,0];
-    this.roar=[0,0];
-  }
-  /* Každá polovica má vlastné pruhy, aby sa korisť neprekrývala */
-  laneXSide(side,i,n){
-    const base=side===0?.05:.55, span=.40;
-    return base+(i+.5)*(span/n);
-  }
-  spawn(side){
-    const n=A.diff==='baby'?2:A.diff==='kid'?3:3;
-    const mine=this.items.filter(o=>o.side===side);
-    const cap=A.diff==='baby'?2:A.diff==='kid'?3:4;
-    if(mine.length>=cap)return;
-    const free=[];
-    for(let i=0;i<n;i++)if(!mine.some(o=>o.lane===i&&o.y<.45))free.push(i);
-    if(!free.length)return;
-    const lane=free[Math.floor(Math.random()*free.length)];
-    const bone=Math.random()<(A.diff==='baby'?.12:.24);
-    const list=HUNT_PREY[side];
-    const bigSide=(side===0);
-    this.items.push({
-      side,lane,x:this.laneXSide(side,lane,n),y:-.12,
-      vy:(bigSide?.0040:.0058)*(.85+Math.random()*.3)*D().speed,
-      bone,e:bone?'☠️':list[Math.floor(Math.random()*list.length)],
-      size:(bone?52:(bigSide?76:56))*D().size,
-      r:(bone?26:(bigSide?40:30))*D().size
-    });
-  }
-  update(poses,W,H){
-    const now=Date.now();
-    const duel=A.players===2;
-    const sides=duel?[0,1]:[0,1];   /* v SOLO hrá jeden hráč obe strany */
-    sides.forEach(side=>{
-      const base=side===0?1500:1150;
-      if(now-this.last[side]>base*D().rate){this.spawn(side);this.last[side]=now}
-    });
-    /* žolík tlesknutím — zmetie kosti zo svojej polovice */
-    sides.forEach(side=>{
-      const jok=duel?A.playerJokers[side]:A.jokers;
-      if(jok<=0)return;
-      const src=duel?(playerPoseSlots(poses,W,H)[side]?[playerPoseSlots(poses,W,H)[side]]:[]):poses;
-      if(src.length&&this.claps[side].check(src,W,H)){
-        if(duel)A.playerJokers[side]--;else A.jokers--;
-        this.jokerFlash[side]=1;this.roar[side]=1;sfxJoker();
-        this.items=this.items.filter(o=>{
-          if(o.side!==side)return true;
-          burstInto(this.parts,o.x*W,o.y*H,o.bone?'#888':'#ffea00',12);
-          if(!o.bone)addScore(side===0?25:10,duel?side:null);
-          return false;
-        });
-        updateHUD();
-      }
-    });
-    const palms=[palmsOfPlayer(poses,W,H,0),palmsOfPlayer(poses,W,H,1)];
-    this.items=this.items.filter(o=>{
-      o.y+=o.vy;
-      const ix=o.x*W,iy=o.y*H;
-      /* len dlane vlastníka polovice; v SOLO obe dlane hráča */
-      const mine=duel?palms[o.side]:palms[0];
-      for(const pt of mine){
-        /* poistka: dlaň musí byť na správnej polovici obrazovky */
-        if(duel&&((o.side===0&&pt.x>W*.52)||(o.side===1&&pt.x<W*.48)))continue;
-        if(palmHit(pt,ix,iy,o.r)){
-          if(o.bone){
-            addScore(-penalty(10),duel?o.side:null);
-            this.flash[o.side]=1;sfxWrong();
-            if(!isBabySoft())loseLife(duel?o.side:null);
-          }else{
-            const pts=o.side===0?25:10;
-            addScore(pts,duel?o.side:null);
-            burstInto(this.parts,ix,iy,o.side===0?'#00e5ff':'#ff4081',14);
-            this.roar[o.side]=1;sfxPop();
-          }
-          return false;
-        }
-      }
-      if(o.y>=1.2){
-        /* ušla korisť = chyba, kosť nech pokojne prejde */
-        if(!o.bone&&!isBabySoft())loseLife(duel?o.side:null);
-        return false;
-      }
-      return true;
-    });
-    this.parts=stepParticles(this.parts);
-    [0,1].forEach(i=>{
-      if(this.flash[i]>0)this.flash[i]-=.05;
-      if(this.jokerFlash[i]>0)this.jokerFlash[i]-=.04;
-      if(this.roar[i]>0)this.roar[i]-=.035;
-    });
-  }
-  draw(ctx,W,H){
-    /* prehistorické pozadie */
-    const sky=ctx.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0,'rgba(255,138,0,.30)');
-    sky.addColorStop(.55,'rgba(191,54,12,.24)');
-    sky.addColorStop(1,'rgba(62,39,35,.34)');
-    ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-    drawSplit(ctx,W,H,'🦖 T-REX  (hráč 1)','🦅 RAPTOR  (hráč 2)','#00e5ff','#ff4081');
-    /* sopky v pozadí */
-    ctx.save();ctx.globalAlpha=.5;
-    emoji(ctx,'🌋',W*.14,H*.20,64);
-    emoji(ctx,'🌴',W*.88,H*.24,58);
-    ctx.restore();
-    this.items.forEach(o=>emoji(ctx,o.e,o.x*W,o.y*H,o.size));
-    drawParticles(ctx,this.parts);
-    /* hlavy dinosaurov dole ako "avatar" hráča, zarevú pri úspechu */
-    const r0=1+this.roar[0]*.35, r1=1+this.roar[1]*.35;
-    emoji(ctx,'🦖',W*.25,H*.90,Math.min(70,W*.13)*r0);
-    emoji(ctx,'🦅',W*.75,H*.90,Math.min(60,W*.11)*r1);
-    /* body per strana */
-    ctx.save();
-    ctx.font='bold '+Math.min(26,W*.045)+'px Fredoka One,cursive';
-    ctx.textAlign='center';ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=10;
-    if(A.players===2){
-      ctx.fillStyle='#00e5ff';ctx.fillText(String(A.scores[0]),W*.25,H*.16);
-      ctx.fillStyle='#ff4081';ctx.fillText(String(A.scores[1]),W*.75,H*.16);
-    }
-    ctx.restore();
-    /* červené bliknutie len na postihnutej polovici */
-    [0,1].forEach(i=>{
-      if(this.flash[i]>0){
-        ctx.fillStyle='rgba(255,23,68,'+(this.flash[i]*.30)+')';
-        ctx.fillRect(i===0?0:W/2,0,W/2,H);
-      }
-      if(this.jokerFlash[i]>0){
-        ctx.fillStyle='rgba(255,234,0,'+(this.jokerFlash[i]*.30)+')';
-        ctx.fillRect(i===0?0:W/2,0,W/2,H);
-      }
-    });
-    tip(ctx,W,H,'Chytaj DLAŇAMI len na SVOJEJ polovici · ☠️ kosť = mínus!');
-  }
-}
-
-/* ═════════════════════════════════════════════════════════════
-   DINO 2) 🥚 HNIEZDO — KOOPERÁCIA, spoločné skóre aj životy
-   ─────────────────────────────────────────────────────────────
-   Uprostred obrazovky je vajíčko. Zhora padajú meteory ☄️ a
-   predátori. Hráči ich ničia dlaňami skôr, než dopadnú na hniezdo.
-   Ľavý hráč prirodzene bráni ľavú stranu, pravý pravú, ale
-   NIKTO nie je viazaný — dlane oboch fungujú kdekoľvek.
-   Žiadny víťaz, žiadny porazený: spoločné A.lives, spoločné A.score.
-   ═════════════════════════════════════════════════════════════ */
-const NEST_THREATS=['☄️','🦂','🐍','🦇','🕷️'];
-class NestGame{
-  constructor(){
-    this.items=[];this.parts=[];this.last=0;
-    this.eggY=.80;this.shake=0;this.pulse=0;
-    this.saved=0;this.shield=0;
-    this.claps=[new Clap(),new Clap()];
-  }
-  spawn(){
-    const cap=A.diff==='baby'?3:A.diff==='kid'?5:7;
-    if(this.items.length>=cap)return;
-    const slot=pickLane(this.items,-.12,.5);
-    if(!slot)return;
-    const heart=Math.random()<.08;      /* bonusové srdce = +1 život */
-    this.items.push({
-      lane:slot.lane,x:slot.x,y:-.12,
-      vy:(.0042+Math.random()*.0022)*D().speed,
-      heart,e:heart?'💖':NEST_THREATS[Math.floor(Math.random()*NEST_THREATS.length)],
-      r:32*D().size,size:56*D().size
-    });
-  }
-  update(poses,W,H){
-    const now=Date.now();
-    this.pulse+=.05;
-    if(now-this.last>1250*D().rate){this.spawn();this.last=now}
-    /* žolík: ktorýkoľvek hráč tleskne → štít zmetie všetko */
-    const anyPose=A.players===2?playerPoseSlots(poses,W,H).filter(Boolean):poses;
-    if(A.jokers>0&&anyPose.length&&this.claps[0].check(anyPose,W,H)){
-      A.jokers--;this.shield=1;sfxJoker();
-      this.items=this.items.filter(o=>{
-        burstInto(this.parts,o.x*W,o.y*H,'#00e5ff',12);
-        if(!o.heart)addScore(5);
-        return false;
-      });
-      updateHUD();
-    }
-    /* dlane OBOCH hráčov fungujú všade — spolupráca, nie teritórium */
-    const palms=A.players===2
-      ? [...palmsOfPlayer(poses,W,H,0),...palmsOfPlayer(poses,W,H,1)]
-      : getPalms(poses,W,H);
-    this.items=this.items.filter(o=>{
-      o.y+=o.vy;
-      const ix=o.x*W,iy=o.y*H;
-      for(const pt of palms){
-        if(palmHit(pt,ix,iy,o.r)){
-          if(o.heart){
-            if(A.lives<9)A.lives++;
-            addScore(5);sfxCoin();updateHUD();
-            burstInto(this.parts,ix,iy,'#ff4081',16);
-          }else{
-            addScore(10);this.saved++;sfxPop();
-            burstInto(this.parts,ix,iy,'#ffea00',14);
-          }
-          return false;
-        }
-      }
-      /* dopad na hniezdo */
-      if(o.y>=this.eggY-.03){
-        if(o.heart)return false;                 /* srdce nikdy neubližuje */
-        this.shake=1;sfxWrong();
-        addScore(-penalty(5));
-        if(!isBabySoft())loseLife();             /* SPOLOČNÝ život */
-        burstInto(this.parts,ix,this.eggY*H,'#ff1744',14);
-        return false;
-      }
-      return true;
-    });
-    this.parts=stepParticles(this.parts);
-    if(this.shake>0)this.shake-=.05;
-    if(this.shield>0)this.shield-=.035;
-  }
-  draw(ctx,W,H){
-    const sky=ctx.createLinearGradient(0,0,0,H);
-    sky.addColorStop(0,'rgba(26,35,126,.42)');
-    sky.addColorStop(.6,'rgba(69,39,160,.30)');
-    sky.addColorStop(1,'rgba(46,125,50,.34)');
-    ctx.fillStyle=sky;ctx.fillRect(0,0,W,H);
-    /* jemné vodiace zóny — návrh, nie pravidlo */
-    ctx.save();
-    ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;ctx.setLineDash([10,14]);
-    ctx.beginPath();ctx.moveTo(W/2,0);ctx.lineTo(W/2,H*.72);ctx.stroke();
-    ctx.setLineDash([]);ctx.restore();
-    /* hniezdo + vajce s dýchaním a otrasom */
-    const sx=this.shake>0?Math.sin(Date.now()*.06)*10*this.shake:0;
-    const ex=W/2+sx, ey=this.eggY*H;
-    ctx.save();
-    ctx.globalAlpha=.9;
-    emoji(ctx,'🪺',ex,ey+18,Math.min(120,W*.22));
-    ctx.restore();
-    const breathe=1+Math.sin(this.pulse)*.05;
-    emoji(ctx,'🥚',ex,ey-14,Math.min(74,W*.14)*breathe);
-    /* štít po žolíku */
-    if(this.shield>0){
-      ctx.save();ctx.globalAlpha=this.shield*.7;
-      ctx.beginPath();ctx.arc(ex,ey-6,Math.min(160,W*.3),0,6.28);
-      ctx.strokeStyle='#00e5ff';ctx.lineWidth=7;ctx.stroke();ctx.restore();
-    }
-    /* strážcovia po stranách */
-    emoji(ctx,'🦕',W*.14,H*.90,Math.min(62,W*.115));
-    emoji(ctx,'🦖',W*.86,H*.90,Math.min(62,W*.115));
-    this.items.forEach(o=>emoji(ctx,o.e,o.x*W,o.y*H,o.size));
-    drawParticles(ctx,this.parts);
-    if(this.shake>0){ctx.fillStyle='rgba(255,23,68,'+(this.shake*.26)+')';ctx.fillRect(0,0,W,H)}
-    /* spoločný panel — zdôrazňuje TÍM, nie súperenie */
-    ctx.save();
-    ctx.font='bold '+Math.min(22,W*.038)+'px Fredoka One,cursive';
-    ctx.textAlign='center';ctx.shadowColor='rgba(0,0,0,.8)';ctx.shadowBlur=10;
-    ctx.fillStyle='#ffea00';
-    ctx.fillText('🤝 SPOLU: '+this.saved+' zachránených',W/2,H*.13);
-    ctx.restore();
-    tip(ctx,W,H,'Chráňte vajíčko SPOLU · 💖 pridá život · hráte za jeden tím');
   }
 }
 
@@ -1831,7 +1525,7 @@ class GlassGame{
     });
     f.globalCompositeOperation='source-over';
     /* meranie vyčistenia len 3x/s — canvas readback je drahý na batériu */
-    const now=Date.now();
+    const now=gameClock();
     if(now-this.checkT>320){
       this.checkT=now;
       try{
@@ -1847,7 +1541,7 @@ class GlassGame{
       if(this.cleared>.82&&!this.done){
         this.done=true;addScore(25);sfxJoker();
         burstInto(this.parts,W/2,H*.45,'#ffea00',24);
-        setTimeout(()=>this.pick(),1700);
+        sessionTimeout(()=>this.pick(),1700);
       }
     }
     this.parts=stepParticles(this.parts);
@@ -1888,11 +1582,11 @@ class DebugGame{
     this.claps=[new Clap(),new Clap()];
     this.jd=new JumpDuck();
     this.clapFlash=[0,0];this.clapCount=[0,0];this.state='run';
-    this.frames=0;this.fps=0;this.fpsT=Date.now();
+    this.frames=0;this.fps=0;this.fpsT=gameClock();
   }
   update(poses,W,H){
     this.frames++;
-    const now=Date.now();
+    const now=gameClock();
     if(now-this.fpsT>=1000){this.fps=Math.round(this.frames*1000/(now-this.fpsT));this.frames=0;this.fpsT=now}
     const slots=A.players===2?playerPoseSlots(poses,W,H):[poses[0]||null,null];
     this.slots=slots;
@@ -1913,7 +1607,7 @@ class DebugGame{
     });
     const rows=[];
     rows.push(['🧪 TEST DLANÍ — diagnostika','#00f5ff']);
-    rows.push(['FPS: '+this.fps+'   ·   inference: '+(A.lastInferMs||0).toFixed(1)+' ms','#ffea00']);
+    rows.push(['Render FPS: '+(A.renderFPS||0)+'   ·   inference: '+(A.lastInferMs||0).toFixed(1)+' ms','#ffea00']);
     rows.push(['Polomer dlane (vek '+A.diff+'): '+palmRadius()+' px','#ffea00']);
     const nP=A.players===2?2:1;
     for(let i=0;i<nP;i++){
@@ -1945,34 +1639,28 @@ class DebugGame{
 
 /* ═════ END / EXIT ═════ */
 function endGame(){
-  if(!A.running)return;A.running=false;clearInterval(A.timerID);
-  setTimeout(()=>{
-    const title=document.querySelector('.res-title'),label=document.getElementById('resLabel'),score=document.getElementById('finalScore');
-    if(isCoop()){
-      /* kooperácia — žiadny víťaz ani porazený */
-      title.textContent='Zvládli ste to spolu! 🤝';
-      label.textContent='Vaše tímové skóre:';
-      score.textContent=A.score;
-      document.getElementById('resStars').textContent='🦕🥚🦖';
-    }else if(isDuel()){
-      score.textContent=`${A.scores[0]} : ${A.scores[1]}`;
-      if(A.scores[0]===A.scores[1]){title.textContent='Remíza! 🤝';label.textContent='Obaja ste boli skvelí:'}
-      else{const w=A.scores[0]>A.scores[1]?1:2;title.textContent=`Vyhráva hráč ${w}! 🏆`;label.textContent='Konečné skóre:'}
-      document.getElementById('resStars').textContent=A.gameType==='hunt'?'🦖 ⚔️ 🦅':'👥🎈👥';
-    }else{
-      title.textContent='Skvelá hra!';label.textContent='Tvoje skóre:';score.textContent=A.score;
-      document.getElementById('resStars').textContent=A.score>=200?'⭐⭐⭐':A.score>=80?'⭐⭐':'⭐';
-    }
-    show('results');
-  },600);
+  if(!A.running)return;stopAll();
+  const title=document.querySelector('.res-title'),label=document.getElementById('resLabel');
+  title.textContent=isCoop()?'Zvládli ste to spolu!':'Skvelá hra!';
+  label.textContent='Tvoje skóre:';
+  document.getElementById('finalScore').textContent=isDuel()?A.scores.join(' : '):A.score;
+  document.getElementById('resStars').textContent=A.diff==='baby'?'Výprava dokončená':A.score+' bodov';
+  show('results');
 }
-function exitGame(){stopAll();show('menu')}
+function exitGame(){stopAll();show('menu');}
 function stopAll(){
-  musicStop();
-  A.running=false;clearInterval(A.timerID);
-  if(A.raf){cancelAnimationFrame(A.raf);A.raf=null}
-  if(A.stream){A.stream.getTracks().forEach(t=>t.stop());A.stream=null}
+  LIFE.epoch++;A.running=false;musicStop();
+  for(const cancel of [...LIFE.waits])cancel();
+  for(const t of LIFE.timers)clearTimeout(t);LIFE.timers.clear();clearInterval(A.timerID);
+  if(A.raf!==null){cancelAnimationFrame(A.raf);A.raf=null;}
+  if(A.stream){A.stream.getTracks().forEach(t=>t.stop());A.stream=null;}
+  if(A.video){A.video.onloadedmetadata=null;A.video.srcObject=null;}
+  A.poses=[];A.poseOK=false;A.lastPoseAt=0;
+  document.getElementById('cdOverlay').classList.remove('show');
 }
+addEventListener('pagehide',stopAll);
+document.addEventListener('visibilitychange',()=>{if(document.hidden){stopAll();show('menu');}});
+
 function replayGame(){startGame(A.gameType)}
 </script>
 </body>

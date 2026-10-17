@@ -1,0 +1,33 @@
+name: Motion Lab verification
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+concurrency:
+  group: motion-lab-${{ github.ref }}
+  cancel-in-progress: true
+permissions:
+  contents: read
+jobs:
+  regressions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run lifecycle, controls and gameplay regressions
+        run: node --test tests/regressions.test.cjs
+      - name: Install pinned browser test dependency
+        run: npm install --no-save --ignore-scripts --package-lock=false playwright@1.56.1
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test real Canvas and DOM with synthetic camera input
+        run: node tests/browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: motion-lab-screenshots
+          path: test-results/
