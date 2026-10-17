@@ -1,9 +1,12 @@
 name: Motion Lab verification
 on:
   push:
-    branches: [main, codex/motion-lab-2026-10-17]
+    branches: [main]
   pull_request:
     branches: [main]
+concurrency:
+  group: motion-lab-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:

@@ -20,7 +20,7 @@ async function main(){
     try{
       const response=await fetch('https://zairas-universe-git-codex-mot-f14fbd-aurelbacho-cybers-projects.vercel.app');
       const body=await response.text();
-      console.log(JSON.stringify({deployedPreviewStatus:response.status,containsMotionLab:body.includes('Motion Lab'),containsControlsScript:body.includes('src/controls.js')}));
+      console.log(JSON.stringify({deployedPreviewStatus:response.status,finalUrl:response.url,pageTitle:(body.match(/<title[^>]*>([^<]*)<\/title>/i)||[])[1],containsMotionLab:body.includes('Motion Lab'),containsControlsScript:body.includes('src/controls.js')}));
     }catch(e){console.log(JSON.stringify({deployedPreviewFetchError:e.message}));}
     for(const viewport of [{width:1280,height:800},{width:390,height:844}]){
       const page=await browser.newPage({viewport});
